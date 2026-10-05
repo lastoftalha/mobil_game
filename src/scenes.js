@@ -1,5 +1,15 @@
 // Boot, menu, hangar and overlay scenes.
 
+// Fades the camera out, then switches scene. A timer backs up the fade event so a
+// missed or slow fade can never leave the player stuck on the old screen.
+function fadeTo(scene, key, ms) {
+  let done = false;
+  const go = () => { if (!done) { done = true; scene.scene.start(key); } };
+  scene.cameras.main.fadeOut(ms, 7, 11, 26);
+  scene.cameras.main.once('camerafadeoutcomplete', go);
+  setTimeout(go, ms + 250);
+}
+
 class BootScene extends Phaser.Scene {
   constructor() { super('Boot'); }
   preload() {
@@ -11,6 +21,7 @@ class BootScene extends Phaser.Scene {
     frame.lineStyle(2, COLORS.line, 0.6).strokeRect(W / 2 - 220, H / 2, 440, 18);
     const bar = this.add.graphics();
     const pct = this.add.text(W / 2, H / 2 + 52, 'YÜKLENİYOR', { fontFamily: FONT, fontSize: '20px', color: CSS.muted }).setOrigin(0.5);
+    this.load.on('loaderror', (file) => console.warn('Yüklenemedi:', file.key));
     this.load.on('progress', (p) => {
       bar.clear().fillStyle(COLORS.line, 1).fillRect(W / 2 - 216, H / 2 + 4, 432 * p, 10);
       pct.setText('YÜKLENİYOR  %' + Math.round(p * 100));
@@ -52,6 +63,7 @@ class MenuScene extends Phaser.Scene {
   constructor() { super('Menu'); }
   create() {
     const H = this.scale.height, safe = safeInsets(this);
+    this.leaving = false;
     this.bg = new SpaceBG(this, 0);
     Sfx.playMusic('music_menu', 0.4);
     this.cameras.main.fadeIn(500, 7, 11, 26);
@@ -95,8 +107,7 @@ class MenuScene extends Phaser.Scene {
   go(key) {
     if (this.leaving) return;
     this.leaving = true;
-    this.cameras.main.fadeOut(300, 7, 11, 26);
-    this.cameras.main.once('camerafadeoutcomplete', () => this.scene.start(key));
+    fadeTo(this, key, 300);
   }
   update(_, dms) { this.bg.update(dms / 1000); }
 }
@@ -105,6 +116,8 @@ class HangarScene extends Phaser.Scene {
   constructor() { super('Hangar'); }
   create() {
     const H = this.scale.height, safe = safeInsets(this);
+    this.leaving = false;
+    this.preview = null;
     this.bg = new SpaceBG(this, 1);
     this.cameras.main.fadeIn(300, 7, 11, 26);
     const top = safe.top + 50;
@@ -215,8 +228,9 @@ class HangarScene extends Phaser.Scene {
     });
   }
   back() {
-    this.cameras.main.fadeOut(250, 7, 11, 26);
-    this.cameras.main.once('camerafadeoutcomplete', () => this.scene.start('Menu'));
+    if (this.leaving) return;
+    this.leaving = true;
+    fadeTo(this, 'Menu', 250);
   }
   update(_, dms) { this.bg.update(dms / 1000); }
 }

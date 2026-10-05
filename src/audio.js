@@ -3,7 +3,7 @@ const Sfx = {
   game: null, music: null, musicKey: null, last: {},
   init(game) { this.game = game; },
   play(key, opts = {}) {
-    if (!Save.d.sfx || !this.game) return;
+    if (!Save.d.sfx || !this.game || !this.game.cache.audio.exists(key)) return;
     const now = performance.now();
     const gap = opts.gap ?? 40;
     if (this.last[key] && now - this.last[key] < gap) return;
@@ -16,11 +16,13 @@ const Sfx = {
     if (old) this.fade(old, 0, 600, () => old.destroy());
     this.musicKey = key;
     this.music = null;
-    if (!key || !Save.d.music || !this.game) return;
-    this.music = this.game.sound.add(key, { loop: true, volume: 0 });
-    this.music.play();
-    this.fade(this.music, volume, 900);
-    this.music._target = volume;
+    // A track that failed to load or decode must never stop the game from running.
+    if (!key || !Save.d.music || !this.game || !this.game.cache.audio.exists(key)) return;
+    try {
+      this.music = this.game.sound.add(key, { loop: true, volume: 0 });
+      this.music.play();
+      this.fade(this.music, volume, 900);
+    } catch (e) { this.music = null; }
   },
   fade(snd, to, ms, done) {
     const from = snd.volume, start = performance.now();

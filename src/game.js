@@ -58,7 +58,7 @@ class GameScene extends Phaser.Scene {
       score: 0, combo: 0, comboT: 0, mult: 1, maxCombo: 1, kills: 0, creditsRun: 0, sector: 0, wave: 0,
       weapon: 1, hp: this.maxHp, shield: 0, nova: 0, invuln: 0, alive: true, controls: false, ended: false,
       boss: null, pending: 0, waveActive: false, fireCd: 0, missileCd: 0, enemies: [], pickups: [], bossEvents: [],
-      beams: [], shownScore: 0,
+      beams: [], shownScore: 0, novaPulse: null, hint: null, creditsShown: -1, coinChain: 0, pauseBtnDown: false, drag: null,
     });
 
     this.bg = new SpaceBG(this, 0);

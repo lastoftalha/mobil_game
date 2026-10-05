@@ -147,5 +147,5 @@ music = {
     'music_boss': ('music/Spacecrusher_0.ogg', None),
 }
 for k, (f, _) in music.items():
-    subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', P(f), '-ac', '2', '-b:a', '96k', os.path.join(AUD, k + '.mp3')], check=True)
+    subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', P(f), '-ac', '2', '-b:a', '64k', os.path.join(AUD, k + '.mp3')], check=True)
 print('audio done')
