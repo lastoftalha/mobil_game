@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load site_tags %}
+{% block content %}
+<section class="page-hero theme-dark">
+  <div class="container">
+    <ol class="breadcrumb" aria-label="Konum">
+      <li><a href="/">{% t "genel.anasayfa" %}</a></li>
+      <li><a href="/hizmetler/">{% t "footer.hizmetler" %}</a></li>
+      <li aria-current="page">{{ service.title }}</li>
+    </ol>
+    <div class="detail-hero__grid">
+      <div>
+        <p class="eyebrow">{% t "hizmet.etiket" %}</p>
+        <h1 class="detail-hero__title display reveal">{{ service.title }}</h1>
+      </div>
+      <div>
+        {% if service.intro or service.short_description %}<p class="detail-hero__intro reveal" style="--d:.1s">{{ service.intro|default:service.short_description|linebreaksbr }}</p>{% endif %}
+        {% if service.tag_list %}<div class="tags-row" style="margin-top:24px">{% for tag in service.tag_list %}<span class="tag">{{ tag }}</span>{% endfor %}</div>{% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% if service.image %}<div class="detail-cover"><img src="{{ service.image.url }}" alt="{{ service.title }}"></div>{% endif %}
+
+{% if service.overview %}
+<section class="section theme-dark">
+  <div class="container detail-layout">
+    <div class="detail-layout__aside"><h2 class="display">{% t "hizmet.genel_bakis" %}</h2></div>
+    <div class="prose lead-prose">{{ service.overview|safe }}</div>
+  </div>
+</section>
+{% endif %}
+
+{% with features=service.features.all %}{% if features %}
+<section class="section features theme-light">
+  <div class="container">
+    <div class="section-head"><div><p class="eyebrow">{{ service.title }}</p><h2 class="section-head__title display t-l">{% t "hizmet.ozellikler" %}</h2></div></div>
+    <div class="features__grid">
+      {% for f in features %}
+      <article class="feature reveal" style="--d:{{ forloop.counter0 }}00ms">
+        <span class="feature__num">{{ forloop.counter|pad2 }}</span>
+        <h3 class="feature__title">{{ f.title }}</h3>
+        {% if f.text %}<p class="feature__text">{{ f.text|linebreaksbr }}</p>{% endif %}
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}{% endwith %}
+
+{% with offerings=service.offerings.all %}{% if offerings %}
+<section class="section theme-gray">
+  <div class="container">
+    <div class="section-head"><h2 class="section-head__title display t-l">{% t "hizmet.ne_sunuyoruz" %}</h2></div>
+    <div class="offerings" style="--cols: {% if offerings|length < 3 %}{{ offerings|length }}{% else %}3{% endif %}">
+      {% for o in offerings %}
+      <div class="offering reveal" style="--d:{{ forloop.counter0 }}00ms">
+        <h3 class="offering__title">{{ o.title }}</h3>
+        <ul>{% for line in o.item_list %}<li>{{ line }}</li>{% endfor %}</ul>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}{% endwith %}
+
+{% with steps=service.steps.all %}{% if steps %}
+<section class="section process theme-dark">
+  <div class="container">
+    <div class="section-head"><div><p class="eyebrow">{% t "hizmet.surec_ust" %}</p><h2 class="section-head__title display t-l">{% t "hizmet.surec" %}</h2></div></div>
+    <ol class="process__grid" style="--cols: {% if steps|length < 4 %}{{ steps|length }}{% else %}4{% endif %}">
+      {% for s in steps %}
+      <li class="step reveal" style="--d:{{ forloop.counter0 }}50ms">
+        <span class="step__num">{{ forloop.counter|pad2 }}</span>
+        <h3 class="step__title">{{ s.title }}</h3>
+        {% if s.text %}<p class="step__text">{{ s.text|linebreaksbr }}</p>{% endif %}
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+{% endif %}{% endwith %}
+
+{% if related_projects %}
+<section class="section section--tight theme-dark">
+  <div class="container section-head"><h2 class="section-head__title display t-l">{% t "hizmet.ilgili_isler" %}</h2></div>
+  <div class="work-grid work-grid--scroll">{% for project in related_projects %}{% include "site/includes/work_card.html" %}{% endfor %}</div>
+</section>
+{% endif %}
+
+<section class="section cta theme-brand">
+  <div class="container cta__inner">
+    {% t "hizmet.cta_baslik" as cta_title %}
+    <h2 class="cta__title display">{{ cta_title|fancy }}</h2>
+    <div class="btn-row"><a class="btn btn--lg" href="/iletisim/">{% t "hizmet.cta_buton" %} <svg class="ico"><use href="#i-arrow-up-right"/></svg></a></div>
+  </div>
+</section>
+
+{% if faqs %}
+<section class="section theme-light">
+  <div class="container faq__grid">
+    <div class="faq__aside"><h2 class="faq__title display">{% t "hizmet.sss" %}</h2></div>
+    {% include "site/includes/accordion.html" %}
+  </div>
+</section>
+{% endif %}
+
+{% if other_services %}
+<section class="section theme-dark">
+  <div class="container">
+    <div class="section-head"><h2 class="section-head__title display t-l">{% t "hizmet.diger" %}</h2></div>
+    <div class="service-rows">
+      {% for s in other_services %}
+      <a class="service-row" href="{{ s.get_absolute_url }}"{% if s.card_image %} data-preview="{{ s.card_image.url }}"{% endif %}>
+        <span class="service-row__num">{{ forloop.counter|stringformat:"03d" }}</span>
+        <h3 class="service-row__title">{{ s.title }}</h3>
+        <div class="service-row__desc">{% if s.short_description %}<p>{{ s.short_description|truncatechars:120 }}</p>{% endif %}</div>
+        <span class="service-row__arrow" aria-hidden="true"><svg class="ico"><use href="#i-arrow-up-right"/></svg></span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

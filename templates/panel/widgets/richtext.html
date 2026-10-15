@@ -1,0 +1,5 @@
+<div class="rte" data-rte>
+  <div class="rte__editor"></div>
+  <textarea name="{{ widget.name }}" id="{{ widget.attrs.id }}" class="input code rte__source" rows="12" hidden>{% if widget.value %}{{ widget.value }}{% endif %}</textarea>
+  <div class="rte__foot"><button type="button" class="link-btn" data-rte-toggle><svg class="ico"><use href="#i-code"/></svg> HTML kaynağı</button></div>
+</div>

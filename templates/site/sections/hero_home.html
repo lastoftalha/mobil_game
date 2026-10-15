@@ -1,0 +1,26 @@
+{% load site_tags %}
+<section class="hero-home"{% if section.anchor %} id="{{ section.anchor }}"{% endif %}>
+  <div class="hero-home__main">
+    <div>
+      <h1 class="hero-home__title display reveal">{{ section.title|fancy }}</h1>
+      {% if section.button_text %}<div class="hero-home__actions reveal" style="--d:.15s"><a class="btn btn--dark btn--lg" href="{{ section.button_url|default:'#' }}">{{ section.button_text }} <svg class="ico"><use href="#i-arrow-up-right"/></svg></a></div>{% endif %}
+    </div>
+    {% if section.lines %}
+    <div class="hero-home__band marquee" aria-hidden="true">
+      {% for _ in "12" %}<div class="marquee__track">{% for line in section.lines %}<span>{{ line }}</span>{% endfor %}{% for line in section.lines %}<span>{{ line }}</span>{% endfor %}</div>{% endfor %}
+    </div>
+    {% endif %}
+  </div>
+  <div class="hero-home__visual">
+    {% if section.video %}
+      <video src="{{ section.video.url }}" autoplay muted loop playsinline{% if section.image %} poster="{{ section.image.url }}"{% endif %}></video>
+    {% elif slides %}
+      <div class="hero-slides">
+        {% for slide in slides %}<img class="slide{% if forloop.first %} is-active{% endif %}" src="{{ slide.image.url }}" alt="{{ slide.title }}" data-caption="{{ slide.title }}"{% if not forloop.first %} loading="lazy"{% endif %}>{% endfor %}
+        <div class="hero-slides__caption"><span class="hero-slides__text">{{ slides.0.title }}</span>{% if slides|length > 1 %}<span class="hero-slides__bars">{% for slide in slides %}<i{% if forloop.first %} class="is-active"{% endif %}></i>{% endfor %}</span>{% endif %}</div>
+      </div>
+    {% elif section.image %}
+      <img src="{{ section.image.url }}" alt="">
+    {% endif %}
+  </div>
+</section>

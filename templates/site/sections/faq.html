@@ -1,0 +1,14 @@
+{% load site_tags %}
+{% if faqs %}
+<section class="section theme-{{ theme }}"{% if section.anchor %} id="{{ section.anchor }}"{% endif %}>
+  <div class="container faq__grid">
+    <div class="faq__aside">
+      {% if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}
+      {% if section.title %}<h2 class="faq__title display reveal">{{ section.title|fancy }}</h2>{% endif %}
+      {% if section.subtitle %}<p class="faq__sub">{{ section.subtitle|linebreaksbr }}</p>{% endif %}
+      {% if section.button_text %}<div class="btn-row"><a class="btn" href="{{ section.button_url|default:'/iletisim/' }}">{{ section.button_text }}</a></div>{% endif %}
+    </div>
+    {% include "site/includes/accordion.html" %}
+  </div>
+</section>
+{% endif %}

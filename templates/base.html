@@ -1,0 +1,61 @@
+{% load static site_tags %}<!doctype html>
+<html lang="tr" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  {% block meta %}
+  <title>{% block title %}{% if page.is_home %}{{ site.meta_title|default:meta_title|default:site.site_name|plain }}{% else %}{{ meta_title|default:site.site_name|plain }}{{ site.meta_title_suffix }}{% endif %}{% endblock %}</title>
+  {% with desc=meta_description|default:site.meta_description|striptags|truncatechars:170 %}
+  {% if desc %}<meta name="description" content="{{ desc }}">{% endif %}
+  <meta property="og:description" content="{{ desc }}">
+  {% endwith %}
+  {% if site.meta_keywords %}<meta name="keywords" content="{{ site.meta_keywords }}">{% endif %}
+  <link rel="canonical" href="{% absolute request.path %}">
+  <meta property="og:type" content="{{ meta_type|default:'website' }}">
+  <meta property="og:site_name" content="{{ site.site_name }}">
+  <meta property="og:title" content="{{ meta_title|default:site.site_name|plain }}">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  {% if meta_image %}<meta property="og:image" content="{% absolute meta_image %}">{% elif site.og_image %}<meta property="og:image" content="{% absolute site.og_image.url %}">{% else %}{% static 'site/img/og-default.jpg' as og_default %}<meta property="og:image" content="{% absolute og_default %}">{% endif %}
+  <meta name="twitter:card" content="summary_large_image">
+  {% endblock %}
+  <meta name="theme-color" content="{{ site.color_dark }}">
+  <link rel="icon" href="{% logo_url 'favicon' %}">
+  <link rel="apple-touch-icon" href="{% if site.favicon %}{{ site.favicon.url }}{% else %}{% static 'site/img/apple-touch-icon.png' %}{% endif %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="{% static 'site/css/site.css' %}">
+  <style>:root{--c-primary:{{ site.color_primary }};--c-dark:{{ site.color_dark }};--c-gray:{{ site.color_gray }};--c-light:{{ site.color_light }};}</style>
+  {% organization_jsonld %}
+  {% block head_extra %}{% endblock %}
+  {% if site.head_code %}{{ site.head_code|safe }}{% endif %}
+</head>
+<body class="{{ body_class }}">
+  <a class="skip-link" href="#main">{% t "genel.icerige_gec" %}</a>
+  {% include "partials/site_icons.html" %}
+  {% include "partials/header.html" %}
+  <main id="main">
+    {% block content %}{% endblock %}
+  </main>
+  {% include "partials/footer.html" %}
+  {% include "partials/messages.html" %}
+  {% if site.cookie_banner_enabled and site.cookie_text %}
+  <div class="cookie-bar" role="region" aria-label="Çerez bildirimi">
+    <p>{{ site.cookie_text }}{% if site.cookie_policy_url %} <a href="{{ site.cookie_policy_url }}">{% t "genel.cerez_detay" %}</a>{% endif %}</p>
+    <button type="button" class="btn btn--sm" data-cookie-ok>{% t "genel.cerez_kabul" %}</button>
+  </div>
+  {% endif %}
+  {% if site.show_whatsapp_button and site.whatsapp_url %}
+  <a class="wa-float" href="{{ site.whatsapp_url }}" target="_blank" rel="noopener" aria-label="{% t 'genel.whatsapp' %}"><svg class="ico"><use href="#s-whatsapp"/></svg></a>
+  {% endif %}
+  {% if user.is_authenticated and user.is_staff %}
+  <div class="staff-bar">
+    <a href="/panel/"><svg class="ico"><use href="#i-arrow-left"/></svg>Panel</a>
+    {% if panel_edit_url %}<a href="{{ panel_edit_url }}" class="is-primary">Bu sayfayı düzenle</a>{% endif %}
+  </div>
+  {% endif %}
+  <script src="{% static 'site/js/site.js' %}" defer></script>
+  {% block scripts %}{% endblock %}
+  {% if site.body_end_code %}{{ site.body_end_code|safe }}{% endif %}
+</body>
+</html>

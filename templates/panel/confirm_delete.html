@@ -1,0 +1,16 @@
+{% extends "panel/base.html" %}
+{% block title %}Sil{% endblock %}
+{% block crumbs %}<a href="{% url 'panel:dashboard' %}">Panel</a><span>/</span><a href="{% url 'panel:list' res.key %}">{{ res.label_plural }}</a><span>/</span><span>Sil</span>{% endblock %}
+{% block content %}
+<div class="card card--narrow danger-card">
+  <span class="danger-card__icon"><svg class="ico"><use href="#i-triangle-alert"/></svg></span>
+  <h1 class="page-title">Silinsin mi?</h1>
+  <p>“<strong>{{ obj }}</strong>” kalıcı olarak silinecek. Bu işlem geri alınamaz.</p>
+  {% if related %}<div class="alert alert--warning">Bununla birlikte şunlar da silinecek: {{ related|join:", " }}.</div>{% endif %}
+  <form method="post" class="btn-row">
+    {% csrf_token %}
+    <button type="submit" class="btn btn--danger"><svg class="ico"><use href="#i-trash-2"/></svg>Evet, sil</button>
+    <a class="btn btn--ghost" href="javascript:history.back()">Vazgeç</a>
+  </form>
+</div>
+{% endblock %}

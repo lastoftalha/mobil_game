@@ -1,0 +1,6 @@
+{% if section.image or section.video %}
+<section class="image-band"{% if section.anchor %} id="{{ section.anchor }}"{% endif %}>
+  {% if section.video %}<video data-parallax src="{{ section.video.url }}" autoplay muted loop playsinline{% if section.image %} poster="{{ section.image.url }}"{% endif %}></video>{% else %}<img data-parallax src="{{ section.image.url }}" alt="{{ section.title }}" loading="lazy">{% endif %}
+  {% if section.title %}<span class="image-band__cap">{{ section.title }}</span>{% endif %}
+</section>
+{% endif %}

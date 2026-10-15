@@ -1,0 +1,14 @@
+<div class="fs-item{% if form.errors %} has-error is-open{% endif %}{% if not form.instance.pk %} is-open is-new{% endif %}" data-formset-item>
+  <div class="fs-item__bar">
+    <span class="drag" data-drag title="Sürükleyerek sırala"><svg class="ico"><use href="#i-grip-vertical"/></svg></span>
+    {% if form.instance.image %}<img class="fs-item__thumb" src="{{ form.instance.image.url }}" alt="">{% endif %}
+    <button type="button" class="fs-item__title" data-fs-collapse>{% if form.instance.pk %}{{ form.instance }}{% else %}Yeni {{ item_label|lower }}{% endif %}</button>
+    <label class="fs-item__del" title="Sil">{{ form.DELETE }}<svg class="ico"><use href="#i-trash-2"/></svg><span class="sr-only">Sil</span></label>
+    <button type="button" class="icon-btn fs-item__chev" data-fs-collapse aria-label="Aç/kapat"><svg class="ico"><use href="#i-chevron-down"/></svg></button>
+  </div>
+  <div class="fs-item__body form-grid">
+    {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+    {% for f in form.visible_fields %}{% if f.name != "DELETE" %}{% include "panel/partials/field.html" %}{% endif %}{% endfor %}
+    {% for e in form.non_field_errors %}<p class="field__error">{{ e }}</p>{% endfor %}
+  </div>
+</div>

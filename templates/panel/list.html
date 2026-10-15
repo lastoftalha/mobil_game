@@ -1,0 +1,102 @@
+{% extends "panel/base.html" %}
+{% load panel_tags %}
+{% block title %}{{ res.label_plural }}{% endblock %}
+{% block crumbs %}<a href="{% url 'panel:dashboard' %}">Panel</a><span>/</span><span>{{ res.label_plural }}</span>{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">{{ res.group }}</p>
+    <h1 class="page-title">{{ res.label_plural }} <span class="count">{{ page_obj.paginator.count }}</span></h1>
+    {% if res.description %}<p class="muted">{{ res.description }}</p>{% endif %}
+  </div>
+  <div class="page-head__actions">
+    {% if res.export_csv %}<a class="btn btn--ghost" href="{% url 'panel:export' res.key %}"><svg class="ico"><use href="#i-arrow-down"/></svg>CSV indir</a>{% endif %}
+    {% if res.key == "sayfalar" %}<a class="btn btn--primary" href="{% url 'panel:page_create' %}"><svg class="ico"><use href="#i-plus"/></svg>Yeni sayfa</a>
+    {% elif res.can_create %}<a class="btn btn--primary" href="{% url 'panel:create' res.key %}"><svg class="ico"><use href="#i-plus"/></svg>Yeni {{ res.label|lower }}</a>{% endif %}
+  </div>
+</div>
+
+{% if res.bulk_upload_field %}
+<form class="card dropzone" method="post" action="{% url 'panel:bulk_upload' res.key %}" enctype="multipart/form-data" data-dropzone>
+  {% csrf_token %}
+  <label class="dropzone__area">
+    <input type="file" name="files" multiple accept="image/*" data-dropzone-input>
+    <svg class="ico"><use href="#i-upload"/></svg>
+    <span><strong>Toplu yükle:</strong> görselleri buraya sürükleyin veya tıklayıp seçin</span>
+    <small class="muted" data-upload-name></small>
+  </label>
+  {% for extra in bulk_extras %}
+  <select name="{{ extra.name }}" class="input input--sm" aria-label="{{ extra.label }}"><option value="">{{ extra.label }} (isteğe bağlı)</option>{% for v, l in extra.options %}<option value="{{ v }}">{{ l }}</option>{% endfor %}</select>
+  {% endfor %}
+  <button type="submit" class="btn btn--primary btn--sm">Yükle</button>
+</form>
+{% endif %}
+
+<div class="card card--flush">
+  <form class="toolbar" method="get">
+    <label class="search"><svg class="ico"><use href="#i-search"/></svg><input type="search" name="q" value="{{ query }}" placeholder="Ara…" class="input"></label>
+    {% for f in filters %}
+    <select name="{{ f.name }}" class="input input--sm" data-autosubmit aria-label="{{ f.label }}">
+      <option value="">{{ f.label|capfirst }}: tümü</option>
+      {% for v, l in f.options %}<option value="{{ v }}"{% if v == f.value %} selected{% endif %}>{{ l }}</option>{% endfor %}
+    </select>
+    {% endfor %}
+    {% if is_filtered %}<a class="link-btn" href="{% url 'panel:list' res.key %}">Filtreyi temizle</a>{% endif %}
+    {% if can_sort %}<span class="hint"><svg class="ico"><use href="#i-grip-vertical"/></svg>Sürükleyerek sıralayın</span>{% endif %}
+  </form>
+
+  {% if objects %}
+  <form method="post" action="{% url 'panel:bulk' res.key %}" data-bulk-form>
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr>
+          <th class="col-check"><input type="checkbox" data-check-all aria-label="Tümünü seç"></th>
+          {% if can_sort %}<th class="col-drag"></th>{% endif %}
+          {% for name, label in res.list_display %}<th>{{ label }}</th>{% endfor %}
+          <th class="col-actions"></th>
+        </tr></thead>
+        <tbody{% if can_sort %} data-sortable data-reorder-url="{% url 'panel:reorder' res.key %}" data-offset="{{ order_offset }}"{% endif %}>
+          {% for obj in objects %}
+          {% edit_url res obj as e_url %}
+          <tr data-id="{{ obj.pk }}"{% if res.key == 'mesajlar' and not obj.is_read %} class="is-unread"{% endif %}>
+            <td class="col-check"><input type="checkbox" name="ids" value="{{ obj.pk }}" data-check aria-label="Seç"></td>
+            {% if can_sort %}<td class="col-drag"><span class="drag" data-drag><svg class="ico"><use href="#i-grip-vertical"/></svg></span></td>{% endif %}
+            {% for name, label in res.list_display %}
+            <td{% if name == main_col %} class="col-main"{% endif %}>{% if name == main_col %}<a href="{{ e_url }}" class="row-link">{% render_cell res obj name %}</a>{% else %}{% render_cell res obj name %}{% endif %}</td>
+            {% endfor %}
+            <td class="col-actions">
+              <div class="row-actions">
+                {% if obj.get_absolute_url and res.key != 'mesajlar' %}<a class="icon-btn" href="{{ obj.get_absolute_url }}" target="_blank" rel="noopener" title="Sitede gör"><svg class="ico"><use href="#i-eye"/></svg></a>{% endif %}
+                <a class="icon-btn" href="{{ e_url }}" title="Düzenle"><svg class="ico"><use href="#i-pencil"/></svg></a>
+                {% if res.can_delete and not obj.system_key %}<a class="icon-btn icon-btn--danger" href="{% url 'panel:delete' res.key obj.pk %}" title="Sil"><svg class="ico"><use href="#i-trash-2"/></svg></a>{% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="bulkbar" data-bulkbar hidden>
+      <span><strong data-bulk-count>0</strong> kayıt seçildi</span>
+      {% if res.toggle_fields %}<button type="submit" name="action" value="activate" class="btn btn--ghost btn--sm">Aktif yap</button><button type="submit" name="action" value="deactivate" class="btn btn--ghost btn--sm">Pasif yap</button>{% endif %}
+      {% if res.can_delete %}<button type="submit" name="action" value="delete" class="btn btn--danger btn--sm" data-confirm="Seçili kayıtlar silinsin mi? Bu işlem geri alınamaz.">Sil</button>{% endif %}
+    </div>
+  </form>
+  {% if page_obj.has_other_pages %}
+  <nav class="pager">
+    {% if page_obj.has_previous %}<a class="btn btn--ghost btn--sm" href="?{{ querystring }}{% if querystring %}&{% endif %}sayfa={{ page_obj.previous_page_number }}">← Önceki</a>{% endif %}
+    <span class="muted">Sayfa {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}<a class="btn btn--ghost btn--sm" href="?{{ querystring }}{% if querystring %}&{% endif %}sayfa={{ page_obj.next_page_number }}">Sonraki →</a>{% endif %}
+  </nav>
+  {% endif %}
+  {% else %}
+  <div class="empty">
+    <svg class="ico"><use href="#i-{{ res.icon }}"/></svg>
+    <h3>{% if is_filtered %}Sonuç bulunamadı{% else %}Henüz {{ res.label|lower }} yok{% endif %}</h3>
+    {% if res.can_create and not is_filtered %}<a class="btn btn--primary" href="{% if res.key == 'sayfalar' %}{% url 'panel:page_create' %}{% else %}{% url 'panel:create' res.key %}{% endif %}">İlk {{ res.label|lower }} ekle</a>{% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

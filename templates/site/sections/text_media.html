@@ -1,0 +1,23 @@
+{% load site_tags %}
+<section class="section text-media theme-{{ theme }}{% if section.flip %} text-media--flip{% endif %}"{% if section.anchor %} id="{{ section.anchor }}"{% endif %}>
+  <div class="container text-media__grid">
+    <div>
+      {% if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}
+      {% if section.title %}<h2 class="text-media__title display reveal">{{ section.title|fancy }}</h2>{% endif %}
+      {% if section.subtitle %}<p class="text-media__sub serif reveal">{{ section.subtitle|fancy }}</p>{% endif %}
+      {% if section.body %}<div class="text-media__body prose reveal">{{ section.body|safe }}</div>{% endif %}
+      {% if items %}<ul class="check-list">{% for item in items %}<li>{{ item.title }}</li>{% endfor %}</ul>{% endif %}
+      {% if section.button_text or section.button2_text %}
+      <div class="btn-row">
+        {% if section.button_text %}<a class="btn" href="{{ section.button_url|default:'#' }}">{{ section.button_text }}</a>{% endif %}
+        {% if section.button2_text %}<a class="link-arrow" href="{{ section.button2_url|default:'#' }}">{{ section.button2_text }} <svg class="ico"><use href="#i-arrow-up-right"/></svg></a>{% endif %}
+      </div>
+      {% endif %}
+    </div>
+    {% if section.video or section.image %}
+    <figure class="text-media__media reveal" style="--d:.15s">
+      {% if section.video %}<video src="{{ section.video.url }}" autoplay muted loop playsinline{% if section.image %} poster="{{ section.image.url }}"{% endif %}></video>{% else %}<img src="{{ section.image.url }}" alt="{{ section.title|plain }}" loading="lazy">{% endif %}
+    </figure>
+    {% endif %}
+  </div>
+</section>

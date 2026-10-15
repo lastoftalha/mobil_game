@@ -1,0 +1,8 @@
+{% load site_tags %}
+<section class="section theme-{{ theme }}"{% if section.anchor %} id="{{ section.anchor }}"{% endif %}>
+  <div class="container container--narrow">
+    {% if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}
+    {% if section.title %}<h2 class="display t-l" style="margin-bottom:32px">{{ section.title|fancy }}</h2>{% endif %}
+    <div class="prose">{{ section.body|safe }}</div>
+  </div>
+</section>

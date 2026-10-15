@@ -1,0 +1,17 @@
+{% load site_tags %}
+<section class="page-hero theme-{{ theme }}{% if section.image %} page-hero--media{% endif %}"{% if section.anchor %} id="{{ section.anchor }}"{% endif %}>
+  <div class="container">
+    <ol class="breadcrumb" aria-label="Konum">
+      <li><a href="/">{% t "genel.anasayfa" %}</a></li>
+      <li aria-current="page">{{ page.title }}</li>
+    </ol>
+    <div class="page-hero__grid">
+      <div>
+        {% if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}
+        <h1 class="page-hero__title display reveal">{{ section.title|default:page.title|fancy }}</h1>
+        {% if section.subtitle %}<p class="page-hero__sub lead reveal" style="--d:.1s">{{ section.subtitle|linebreaksbr }}</p>{% endif %}
+      </div>
+      {% if section.image %}<figure class="page-hero__media reveal" style="--d:.2s"><img src="{{ section.image.url }}" alt=""></figure>{% endif %}
+    </div>
+  </div>
+</section>

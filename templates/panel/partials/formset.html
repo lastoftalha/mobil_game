@@ -1,0 +1,20 @@
+<section class="card formset" data-formset data-prefix="{{ fs.prefix }}">
+  <header class="card__head">
+    <div><h2 class="card__title">{{ title }} <span class="count" data-formset-count>{{ fs.forms|length }}</span></h2>{% if help %}<p class="muted small">{{ help }}</p>{% endif %}</div>
+    <button type="button" class="btn btn--ghost btn--sm" data-formset-add><svg class="ico"><use href="#i-plus"/></svg>{{ item_label }} ekle</button>
+  </header>
+  {{ fs.management_form }}
+  {% for e in fs.non_form_errors %}<div class="alert alert--error">{{ e }}</div>{% endfor %}
+  <div class="formset__list" data-formset-list>
+    {% for form in fs.forms %}{% include "panel/partials/formset_item.html" %}{% endfor %}
+  </div>
+  <p class="empty-hint" data-formset-empty{% if fs.forms %} hidden{% endif %}>Henüz {{ item_label|lower }} eklenmedi.</p>
+  {% if bulk %}
+  <label class="upload-bulk">
+    <input type="file" name="bulk-{{ fs.prefix }}" multiple accept="image/*" data-bulk-input>
+    <svg class="ico"><use href="#i-images"/></svg><span><strong>Toplu görsel ekle</strong> — birden fazla dosya seçin veya sürükleyin</span>
+    <span class="upload__name" data-upload-name></span>
+  </label>
+  {% endif %}
+  <template data-formset-template>{% with form=fs.empty_form %}{% include "panel/partials/formset_item.html" %}{% endwith %}</template>
+</section>

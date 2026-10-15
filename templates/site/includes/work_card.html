@@ -1,0 +1,10 @@
+<a class="work-card" href="{{ project.get_absolute_url }}">
+  <div class="work-card__media">
+    <div class="work-card__strip strip-{{ project.strip_color }}" aria-hidden="true"><span>{% for _ in "123456" %}{{ project.strip }} {% endfor %}</span></div>
+    <div class="work-card__img">{% if project.cover %}<img src="{{ project.cover.url }}" alt="{{ project.title }}" loading="lazy">{% else %}<span class="placeholder">{{ project.title|slice:":1" }}</span>{% endif %}</div>
+  </div>
+  <div class="work-card__body">
+    <h3 class="work-card__title">{{ project.title }}</h3>
+    <p class="work-card__meta">{% if project.category %}{{ project.category.name }}{% endif %}{% if project.category and project.year %} · {% endif %}{{ project.year }}</p>
+  </div>
+</a>

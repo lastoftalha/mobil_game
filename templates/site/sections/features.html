@@ -1,0 +1,25 @@
+{% load site_tags %}
+<section class="section features theme-{{ theme }}"{% if section.anchor %} id="{{ section.anchor }}"{% endif %}>
+  <div class="container">
+    {% if section.title or section.eyebrow or section.subtitle %}
+    <div class="section-head">
+      <div>
+        {% if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}
+        {% if section.title %}<h2 class="section-head__title display t-l reveal">{{ section.title|fancy }}</h2>{% endif %}
+      </div>
+      {% if section.subtitle %}<p class="lead muted" style="max-width:46ch">{{ section.subtitle|linebreaksbr }}</p>{% endif %}
+    </div>
+    {% endif %}
+    <div class="features__grid">
+      {% for item in items %}
+      <article class="feature reveal" style="--d:{{ forloop.counter0 }}00ms">
+        <span class="feature__num">{{ forloop.counter|pad2 }}</span>
+        {% if item.image %}<div class="feature__img"><img src="{{ item.image.url }}" alt="" loading="lazy"></div>{% endif %}
+        <h3 class="feature__title">{{ item.title }}</h3>
+        {% if item.text %}<p class="feature__text">{{ item.text|linebreaksbr }}</p>{% endif %}
+        {% if item.url %}<a class="link-arrow" href="{{ item.url }}">{% t "genel.detaylar" %} <svg class="ico"><use href="#i-arrow-up-right"/></svg></a>{% endif %}
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>

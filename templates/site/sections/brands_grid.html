@@ -1,0 +1,21 @@
+{% load site_tags %}
+<section class="section theme-{{ theme }}"{% if section.anchor %} id="{{ section.anchor }}"{% endif %}>
+  <div class="container">
+    {% if section.title or section.eyebrow %}
+    <div class="section-head">
+      <div>
+        {% if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}
+        {% if section.title %}<h2 class="section-head__title display t-l reveal">{{ section.title|fancy }}</h2>{% endif %}
+      </div>
+      {% if section.subtitle %}<p class="lead muted" style="max-width:46ch">{{ section.subtitle|linebreaksbr }}</p>{% endif %}
+    </div>
+    {% endif %}
+    <div class="brands-grid">
+      {% for brand in brands %}
+      {% if brand.url %}<a class="logo-tile reveal{% if brand.monochrome %} logo-tile--mono{% endif %}" href="{{ brand.url }}" target="_blank" rel="noopener" title="{{ brand.name }}">{% else %}<div class="logo-tile reveal{% if brand.monochrome %} logo-tile--mono{% endif %}" title="{{ brand.name }}">{% endif %}
+        <img src="{{ brand.logo.url }}" alt="{{ brand.name }}" loading="lazy">
+      {% if brand.url %}</a>{% else %}</div>{% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>

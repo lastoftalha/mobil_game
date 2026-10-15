@@ -1,0 +1,9 @@
+{% load site_tags %}
+<section class="section big-headline theme-{{ theme }}"{% if section.anchor %} id="{{ section.anchor }}"{% endif %}>
+  <div class="container">
+    <h2 class="big-headline__title display reveal">{{ section.title|fancy }}</h2>
+    {% if section.subtitle %}<p class="big-headline__sub serif reveal" style="--d:.1s">{{ section.subtitle|fancy }}</p>{% endif %}
+    {% if section.body %}<div class="big-headline__body reveal" style="--d:.2s">{{ section.body|safe }}</div>{% endif %}
+    {% if section.button_text %}<div class="btn-row reveal" style="--d:.3s"><a class="btn btn--lg" href="{{ section.button_url|default:'#' }}">{{ section.button_text }} <svg class="ico"><use href="#i-arrow-up-right"/></svg></a></div>{% endif %}
+  </div>
+</section>

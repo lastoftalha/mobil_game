@@ -1,0 +1,50 @@
+{% extends "panel/base.html" %}
+{% block title %}{{ section.type_label }}{% endblock %}
+{% block crumbs %}<a href="{% url 'panel:dashboard' %}">Panel</a><span>/</span><a href="{% url 'panel:list' 'sayfalar' %}">Sayfalar</a><span>/</span><a href="{% url 'panel:page_builder' page.pk %}">{{ page.title }}</a><span>/</span><span>{{ section.type_label }}</span>{% endblock %}
+{% block content %}
+<form method="post" enctype="multipart/form-data" class="editor" novalidate data-unsaved>
+  {% csrf_token %}
+  <div class="page-head">
+    <div>
+      <p class="eyebrow">{{ page.title }} · Bölüm</p>
+      <h1 class="page-title">{{ section.type_label }}</h1>
+      <p class="muted">{{ cfg.description }}</p>
+    </div>
+    <div class="page-head__actions">
+      <a class="btn btn--ghost" href="{{ page.get_absolute_url }}{% if section.anchor %}#{{ section.anchor }}{% endif %}" target="_blank" rel="noopener"><svg class="ico"><use href="#i-eye"/></svg>Önizle</a>
+      <button type="submit" class="btn btn--primary"><svg class="ico"><use href="#i-save"/></svg>Kaydet</button>
+    </div>
+  </div>
+  {% if form.non_field_errors %}<div class="alert alert--error">{% for e in form.non_field_errors %}{{ e }} {% endfor %}</div>{% endif %}
+  <div class="editor__grid">
+    <div class="editor__main">
+      <section class="card">
+        <h2 class="card__title">İçerik</h2>
+        <div class="form-grid">
+          {% for f in form %}{% if f.name not in "name theme anchor is_active" %}{% include "panel/partials/field.html" %}{% endif %}{% endfor %}
+        </div>
+        {% if not cfg.fields %}<p class="muted">Bu bölümün içeriği otomatik olarak ilgili kayıtlardan gelir.</p>{% endif %}
+      </section>
+      {% if formset %}
+        {% include "panel/partials/formset.html" with fs=formset title=item_cfg.label item_label="Öğe" bulk=has_image_items %}
+      {% endif %}
+    </div>
+    <aside class="editor__side">
+      <div class="card sticky">
+        <h2 class="card__title">Görünüm</h2>
+        <div class="form-grid form-grid--single">
+          {% include "panel/partials/field.html" with f=form.is_active %}
+          {% include "panel/partials/field.html" with f=form.theme %}
+          {% include "panel/partials/field.html" with f=form.name %}
+          {% include "panel/partials/field.html" with f=form.anchor %}
+        </div>
+        <div class="stack" style="margin-top:18px">
+          <button type="submit" class="btn btn--primary btn--block"><svg class="ico"><use href="#i-save"/></svg>Kaydet</button>
+          <button type="submit" name="_back" class="btn btn--ghost btn--block">Kaydet ve sayfaya dön</button>
+        </div>
+        <a class="link-btn" href="{% url 'panel:page_builder' page.pk %}" style="margin-top:14px">← {{ page.title }} bölümleri</a>
+      </div>
+    </aside>
+  </div>
+</form>
+{% endblock %}

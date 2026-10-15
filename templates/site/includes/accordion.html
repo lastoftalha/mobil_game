@@ -1,0 +1,12 @@
+<div class="accordion">
+  {% for f in faqs %}
+  <details class="acc-item"{% if forloop.first %} open{% endif %}>
+    <summary>
+      <span class="acc-item__num">{{ forloop.counter|stringformat:"02d" }}</span>
+      <span class="acc-item__q">{{ f.question }}</span>
+      <span class="acc-item__icon" aria-hidden="true"><svg class="ico"><use href="#i-plus"/></svg></span>
+    </summary>
+    <div class="acc-item__a">{{ f.answer|linebreaksbr }}</div>
+  </details>
+  {% endfor %}
+</div>

@@ -1,0 +1,10 @@
+{% load site_tags %}
+<a class="post-card" href="{{ post.get_absolute_url }}">
+  <div class="post-card__img">
+    {% if post.cover %}<img src="{{ post.cover.url }}" alt="{{ post.title }}" loading="lazy">{% endif %}
+    {% if post.category %}<span class="post-card__cat">{{ post.category.name }}</span>{% endif %}
+  </div>
+  <div class="post-card__meta"><span>{{ post.published_at|date:"j M Y" }}</span><span>{{ post.minutes }} {% t "blog.dk" %}</span></div>
+  <h3 class="post-card__title">{{ post.title }}</h3>
+  <p class="post-card__excerpt">{{ post.summary }}</p>
+</a>

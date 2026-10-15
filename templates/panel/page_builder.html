@@ -1,0 +1,72 @@
+{% extends "panel/base.html" %}
+{% load site_tags %}
+{% block title %}{{ page.title }}{% endblock %}
+{% block crumbs %}<a href="{% url 'panel:dashboard' %}">Panel</a><span>/</span><a href="{% url 'panel:list' 'sayfalar' %}">Sayfalar</a><span>/</span><span>{{ page.title }}</span>{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">{% if page.is_system %}Sistem sayfası · {{ page.get_system_key_display }}{% else %}Özel sayfa{% endif %}</p>
+    <h1 class="page-title">{{ page.title }} {% if not page.is_published %}<span class="badge badge--muted">Taslak</span>{% endif %}</h1>
+    <p class="muted"><code>{{ page.get_absolute_url }}</code> · {{ sections|length }} bölüm</p>
+  </div>
+  <div class="page-head__actions">
+    <a class="btn btn--ghost" href="{{ page.get_absolute_url }}" target="_blank" rel="noopener"><svg class="ico"><use href="#i-eye"/></svg>Sayfayı gör</a>
+    <button type="button" class="btn btn--primary" data-open-dialog="add-section"><svg class="ico"><use href="#i-plus"/></svg>Bölüm ekle</button>
+  </div>
+</div>
+
+<div class="editor__grid">
+  <div class="editor__main">
+    <section class="card">
+      <header class="card__head"><div><h2 class="card__title">Bölümler</h2><p class="muted small">Sürükleyerek sıralayın. Göz simgesiyle bölümü gizleyip gösterebilirsiniz.</p></div></header>
+      {% if sections %}
+      <ol class="section-list" data-sortable data-reorder-url="{% url 'panel:sections_reorder' page.pk %}">
+        {% for s in sections %}
+        <li class="section-row{% if not s.is_active %} is-off{% endif %}" data-id="{{ s.pk }}" id="bolum-{{ s.pk }}">
+          <span class="drag" data-drag title="Sürükle"><svg class="ico"><use href="#i-grip-vertical"/></svg></span>
+          <span class="section-row__icon theme-dot theme-dot--{{ s.resolved_theme }}"><svg class="ico"><use href="#i-{{ s.config.icon|default:'layers' }}"/></svg></span>
+          <a class="section-row__main" href="{% url 'panel:section_edit' s.pk %}">
+            <strong>{{ s.display_name }}</strong>
+            <small>{{ s.type_label }}{% if s.items.all %} · {{ s.items.all|length }} öğe{% endif %}</small>
+          </a>
+          {% if s.image %}<img class="thumb" src="{{ s.image.url }}" alt="">{% endif %}
+          <div class="row-actions">
+            <button type="button" class="switch-btn{% if s.is_active %} is-on{% endif %}" data-toggle-url="{% url 'panel:section_toggle' s.pk %}" aria-pressed="{% if s.is_active %}true{% else %}false{% endif %}" title="Göster / gizle"><span></span></button>
+            <a class="icon-btn" href="{% url 'panel:section_edit' s.pk %}" title="Düzenle"><svg class="ico"><use href="#i-pencil"/></svg></a>
+            <form method="post" action="{% url 'panel:section_duplicate' s.pk %}">{% csrf_token %}<button type="submit" class="icon-btn" title="Kopyala"><svg class="ico"><use href="#i-copy"/></svg></button></form>
+            <form method="post" action="{% url 'panel:section_delete' s.pk %}">{% csrf_token %}<button type="submit" class="icon-btn icon-btn--danger" title="Sil" data-confirm="“{{ s.display_name }}” bölümü silinsin mi?"><svg class="ico"><use href="#i-trash-2"/></svg></button></form>
+          </div>
+        </li>
+        {% endfor %}
+      </ol>
+      {% else %}
+      <div class="empty"><svg class="ico"><use href="#i-layers"/></svg><h3>Bu sayfada henüz bölüm yok</h3><button type="button" class="btn btn--primary" data-open-dialog="add-section">İlk bölümü ekle</button></div>
+      {% endif %}
+    </section>
+  </div>
+  <aside class="editor__side">
+    <form method="post" enctype="multipart/form-data" class="card" novalidate>
+      {% csrf_token %}
+      <h2 class="card__title">Sayfa ayarları</h2>
+      <div class="form-grid form-grid--single">
+        {% for f in form %}{% include "panel/partials/field.html" %}{% endfor %}
+      </div>
+      <button type="submit" class="btn btn--primary btn--block" style="margin-top:18px">Ayarları kaydet</button>
+      {% if not page.is_system %}<a class="link-btn link-btn--danger" href="{% url 'panel:delete' 'sayfalar' page.pk %}" style="margin-top:14px"><svg class="ico"><use href="#i-trash-2"/></svg>Sayfayı sil</a>{% endif %}
+    </form>
+  </aside>
+</div>
+
+<dialog class="dialog" id="add-section">
+  <div class="dialog__head"><h2 class="card__title">Bölüm ekle</h2><button type="button" class="icon-btn" data-close-dialog aria-label="Kapat"><svg class="ico"><use href="#i-x"/></svg></button></div>
+  <div class="type-grid">
+    {% for t in section_types %}
+    <form method="post" action="{% url 'panel:section_add' page.pk %}">
+      {% csrf_token %}
+      <input type="hidden" name="type" value="{{ t.key }}">
+      <button type="submit" class="type-card"><span class="type-card__icon theme-dot theme-dot--{{ t.theme }}"><svg class="ico"><use href="#i-{{ t.icon }}"/></svg></span><strong>{{ t.label }}</strong><small>{{ t.description }}</small></button>
+    </form>
+    {% endfor %}
+  </div>
+</dialog>
+{% endblock %}

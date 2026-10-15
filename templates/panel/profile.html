@@ -1,0 +1,20 @@
+{% extends "panel/base.html" %}
+{% block title %}Hesabım{% endblock %}
+{% block crumbs %}<a href="{% url 'panel:dashboard' %}">Panel</a><span>/</span><span>Hesabım</span>{% endblock %}
+{% block content %}
+<div class="page-head"><div><p class="eyebrow">Hesap</p><h1 class="page-title">Hesabım</h1><p class="muted">Kullanıcı adı: <strong>{{ request.user.get_username }}</strong></p></div></div>
+<div class="grid-2">
+  <form method="post" class="card" novalidate>
+    {% csrf_token %}
+    <h2 class="card__title">Bilgilerim</h2>
+    <div class="form-grid form-grid--single">{% for f in profile_form %}{% include "panel/partials/field.html" %}{% endfor %}</div>
+    <button type="submit" name="_profile" class="btn btn--primary" style="margin-top:18px">Kaydet</button>
+  </form>
+  <form method="post" class="card" novalidate>
+    {% csrf_token %}
+    <h2 class="card__title">Şifre değiştir</h2>
+    <div class="form-grid form-grid--single">{% for f in password_form %}{% include "panel/partials/field.html" %}{% endfor %}</div>
+    <button type="submit" name="_password" class="btn btn--primary" style="margin-top:18px">Şifreyi değiştir</button>
+  </form>
+</div>
+{% endblock %}

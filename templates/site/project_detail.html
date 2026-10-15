@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load site_tags %}
+{% block content %}
+<section class="page-hero theme-dark">
+  <div class="container">
+    <ol class="breadcrumb" aria-label="Konum">
+      <li><a href="/">{% t "genel.anasayfa" %}</a></li>
+      <li><a href="/portfoy/">{% t "proje.portfoy" %}</a></li>
+      <li aria-current="page">{{ project.title }}</li>
+    </ol>
+    <div class="detail-hero__grid">
+      <h1 class="detail-hero__title display reveal">{{ project.title }}</h1>
+      {% if project.summary %}<p class="detail-hero__intro reveal" style="--d:.1s">{{ project.summary|linebreaksbr }}</p>{% endif %}
+    </div>
+    <div class="project-meta" style="margin-top:clamp(36px,5vw,72px)">
+      <div><small>{% t "proje.musteri" %}</small><strong>{{ project.client|default:"—" }}</strong></div>
+      <div><small>{% t "proje.kategori" %}</small><strong>{{ project.category.name|default:"—" }}</strong></div>
+      <div><small>{% t "proje.yil" %}</small><strong>{{ project.year|default:"—" }}</strong></div>
+      <div><small>{% t "proje.hizmetler" %}</small><strong>{% for s in project.services.all %}<a href="{{ s.get_absolute_url }}">{{ s.title }}</a>{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}</strong></div>
+    </div>
+  </div>
+</section>
+{% if project.cover %}<div class="detail-cover"><img src="{{ project.cover.url }}" alt="{{ project.title }}"></div>{% endif %}
+{% if project.body or project.website_url or project.tag_list %}
+<section class="section theme-dark">
+  <div class="container detail-layout">
+    <div class="detail-layout__aside">
+      {% if project.website_url %}<a class="btn" href="{{ project.website_url }}" target="_blank" rel="noopener">{% t "proje.siteyi_ziyaret" %} <svg class="ico"><use href="#i-arrow-up-right"/></svg></a>{% endif %}
+      {% if project.tag_list %}<div class="tags-row" style="margin-top:24px">{% for tag in project.tag_list %}<span class="tag">{{ tag }}</span>{% endfor %}</div>{% endif %}
+    </div>
+    <div class="prose">{{ project.body|safe }}</div>
+  </div>
+</section>
+{% endif %}
+{% with images=project.images.all %}{% if images %}
+<section class="section section--tight theme-dark">
+  <div class="container project-gallery" data-lightbox>
+    {% for img in images %}
+    <a class="gallery-item" href="{{ img.image.url }}" data-full="{{ img.image.url }}" data-caption="{{ img.caption }}"><img src="{{ img.image.url }}" alt="{{ img.caption|default:project.title }}" loading="lazy">{% if img.caption %}<span class="gallery-item__cap">{{ img.caption }}</span>{% endif %}</a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}{% endwith %}
+{% if next_project %}
+<section class="theme-dark">
+  <div class="container">
+    <a class="next-link" href="{{ next_project.get_absolute_url }}">
+      <span><small>{% t "proje.sonraki" %}</small><strong>{{ next_project.title }}</strong></span>
+      <span class="service-row__arrow"><svg class="ico"><use href="#i-arrow-right"/></svg></span>
+    </a>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

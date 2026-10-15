@@ -1,0 +1,9 @@
+{% load site_tags %}
+<section class="section statement theme-{{ theme }}"{% if section.anchor %} id="{{ section.anchor }}"{% endif %}>
+  <div class="container">
+    {% if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}
+    <h2 class="statement__title serif reveal">{{ section.title|fancy }}</h2>
+    {% if section.body %}<div class="statement__body reveal" style="--d:.1s">{{ section.body|safe }}</div>{% endif %}
+    {% if section.button_text %}<div class="btn-row"><a class="btn" href="{{ section.button_url|default:'#' }}">{{ section.button_text }}</a></div>{% endif %}
+  </div>
+</section>

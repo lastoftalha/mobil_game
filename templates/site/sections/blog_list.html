@@ -1,0 +1,34 @@
+{% load site_tags %}
+<section class="section theme-{{ theme }}"{% if section.anchor %} id="{{ section.anchor }}"{% endif %}>
+  <div class="container">
+    <div class="blog-toolbar">
+      <div class="filter-bar" aria-label="Kategoriler">
+        <a class="chip{% if not active_category %} is-active{% endif %}" href="{{ request.path }}{% if query %}?q={{ query|urlencode }}{% endif %}">{% t "genel.tumu" %}</a>
+        {% for c in categories %}<a class="chip{% if active_category == c %} is-active{% endif %}" href="?kategori={{ c.slug }}{% if query %}&amp;q={{ query|urlencode }}{% endif %}">{{ c.name }}</a>{% endfor %}
+      </div>
+      <form class="search-form" method="get" role="search">
+        {% if active_category %}<input type="hidden" name="kategori" value="{{ active_category.slug }}">{% endif %}
+        <label class="sr-only" for="blog-q">{% t "blog.ara" %}</label>
+        <input id="blog-q" type="search" name="q" value="{{ query }}" placeholder="{% t 'blog.ara' %}">
+        <button type="submit" aria-label="{% t 'blog.ara_buton' %}"><svg class="ico"><use href="#i-search"/></svg></button>
+      </form>
+    </div>
+    {% if query %}<p class="muted" style="margin-bottom:28px">“{{ query }}” {% t "blog.sonuc" %}: {{ page_obj.paginator.count }}</p>{% endif %}
+    {% if posts %}
+    <div class="post-grid">
+      {% for post in posts %}<div class="reveal">{% include "site/includes/post_card.html" %}</div>{% endfor %}
+    </div>
+    {% if page_obj.has_other_pages %}
+    <nav class="pagination" aria-label="Sayfalama">
+      {% if page_obj.has_previous %}<a href="?sayfa={{ page_obj.previous_page_number }}{% if active_category %}&amp;kategori={{ active_category.slug }}{% endif %}{% if query %}&amp;q={{ query|urlencode }}{% endif %}" aria-label="{% t 'blog.onceki' %}"><svg class="ico"><use href="#i-arrow-left"/></svg></a>{% endif %}
+      {% for num in page_obj.paginator.page_range %}
+        {% if num == page_obj.number %}<span class="is-current" aria-current="page">{{ num }}</span>{% else %}<a href="?sayfa={{ num }}{% if active_category %}&amp;kategori={{ active_category.slug }}{% endif %}{% if query %}&amp;q={{ query|urlencode }}{% endif %}">{{ num }}</a>{% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}<a href="?sayfa={{ page_obj.next_page_number }}{% if active_category %}&amp;kategori={{ active_category.slug }}{% endif %}{% if query %}&amp;q={{ query|urlencode }}{% endif %}" aria-label="{% t 'blog.sonraki' %}"><svg class="ico"><use href="#i-arrow-right"/></svg></a>{% endif %}
+    </nav>
+    {% endif %}
+    {% else %}
+    <p class="empty-state">{% t "blog.bos" %}</p>
+    {% endif %}
+  </div>
+</section>

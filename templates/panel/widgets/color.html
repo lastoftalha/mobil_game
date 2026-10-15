@@ -1,0 +1,1 @@
+<div class="color-field"><input type="color" value="{{ widget.value|default:'#000000' }}" data-color-picker aria-label="Renk seç"><input type="text" name="{{ widget.name }}" value="{{ widget.value|default:'' }}" maxlength="7" class="input" data-color-text{% if widget.attrs.id %} id="{{ widget.attrs.id }}"{% endif %}{% if widget.required %} required{% endif %}></div>

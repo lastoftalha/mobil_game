@@ -1,0 +1,20 @@
+{% load site_tags %}
+{% if projects %}
+<section class="section section--tight theme-{{ theme }}"{% if section.anchor %} id="{{ section.anchor }}"{% endif %}>
+  {% if section.title or section.eyebrow %}
+  <div class="container section-head">
+    <div>
+      {% if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}
+      {% if section.title %}<h2 class="section-head__title display t-l reveal">{{ section.title|fancy }}</h2>{% endif %}
+    </div>
+    {% if section.button_text %}<a class="link-arrow" href="{{ section.button_url|default:'/portfoy/' }}">{{ section.button_text }} <svg class="ico"><use href="#i-arrow-up-right"/></svg></a>{% endif %}
+  </div>
+  {% endif %}
+  <div class="work-grid work-grid--scroll">
+    {% for project in projects %}{% include "site/includes/work_card.html" %}{% endfor %}
+  </div>
+  {% if section.button_text and not section.title and not section.eyebrow %}
+  <div class="container work-section__foot"><a class="link-arrow" href="{{ section.button_url|default:'/portfoy/' }}">{{ section.button_text }} <svg class="ico"><use href="#i-arrow-up-right"/></svg></a></div>
+  {% endif %}
+</section>
+{% endif %}

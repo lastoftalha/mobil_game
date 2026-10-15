@@ -1,0 +1,37 @@
+{% load static site_tags %}<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Giriş · {{ site.site_name }} Panel</title>
+  <link rel="icon" href="{% static 'site/img/favicon-48.png' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Instrument+Serif&family=Inter+Tight:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="{% static 'panel/css/panel.css' %}">
+</head>
+<body class="login-page">
+  <div class="login">
+    <div class="login__art" aria-hidden="true">
+      <img src="{% logo_url 'logo_dark' %}" alt="">
+      <p class="login__slogan">İyi işler şansa bırakılmaz,<br><em>bize bırakılır.</em></p>
+    </div>
+    <div class="login__form">
+      <form method="post" class="login__card" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        <img class="login__mark" src="{% logo_url 'logo_mark' %}" alt="{{ site.site_name }}">
+        <h1>Yönetim <span>Paneli</span></h1>
+        <p class="muted">Devam etmek için giriş yapın.</p>
+        {% if messages %}{% for m in messages %}<div class="alert alert--{{ m.level_tag }}">{{ m }}</div>{% endfor %}{% endif %}
+        {% if form.non_field_errors %}<div class="alert alert--error">Kullanıcı adı veya şifre hatalı.</div>{% endif %}
+        <div class="field"><label class="field__label" for="{{ form.username.id_for_label }}">Kullanıcı adı</label>{{ form.username }}</div>
+        <div class="field"><label class="field__label" for="{{ form.password.id_for_label }}">Şifre</label>{{ form.password }}</div>
+        <button type="submit" class="btn btn--primary btn--block">Giriş yap</button>
+        <a class="login__back" href="/">← Siteye dön</a>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,11 @@
+<div class="upload" data-upload>
+  <div class="upload__preview" data-upload-preview>{% if widget.is_initial %}<img src="{{ widget.value.url }}" alt="">{% else %}<svg class="ico"><use href="#i-image"/></svg>{% endif %}</div>
+  <div class="upload__body">
+    <label class="upload__drop">
+      <input type="{{ widget.type }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
+      <span class="upload__cta"><svg class="ico"><use href="#i-upload"/></svg><span><strong>Görsel seç</strong> veya buraya sürükle</span></span>
+      <span class="upload__name" data-upload-name>{% if widget.is_initial %}{{ widget.value.name }}{% else %}JPG, PNG veya WEBP{% endif %}</span>
+    </label>
+    {% if widget.is_initial and not widget.required %}<label class="check-inline"><input type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}"> Görseli kaldır</label>{% endif %}
+  </div>
+</div>

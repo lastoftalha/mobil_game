@@ -1,0 +1,21 @@
+{% load site_tags %}
+<section class="section process theme-{{ theme }}"{% if section.anchor %} id="{{ section.anchor }}"{% endif %}>
+  <div class="container">
+    <div class="section-head">
+      <div>
+        {% if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}
+        {% if section.title %}<h2 class="section-head__title display t-l reveal">{{ section.title|fancy }}</h2>{% endif %}
+      </div>
+      {% if section.subtitle %}<p class="lead muted" style="max-width:46ch">{{ section.subtitle|linebreaksbr }}</p>{% endif %}
+    </div>
+    <ol class="process__grid" style="--cols: {% if items|length < 4 %}{{ items|length }}{% else %}4{% endif %}">
+      {% for item in items %}
+      <li class="step reveal" style="--d:{{ forloop.counter0 }}50ms">
+        <span class="step__num">{{ forloop.counter|pad2 }}</span>
+        <h3 class="step__title">{{ item.title }}</h3>
+        {% if item.text %}<p class="step__text">{{ item.text|linebreaksbr }}</p>{% endif %}
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>

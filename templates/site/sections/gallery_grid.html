@@ -1,0 +1,32 @@
+{% load site_tags %}
+<section class="section theme-{{ theme }}"{% if section.anchor %} id="{{ section.anchor }}"{% endif %} data-filter-group>
+  <div class="container">
+    {% if section.title or section.eyebrow %}
+    <div class="section-head">
+      <div>
+        {% if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}
+        {% if section.title %}<h2 class="section-head__title display t-l reveal">{{ section.title|fancy }}</h2>{% endif %}
+      </div>
+      {% if section.subtitle %}<p class="lead muted" style="max-width:46ch">{{ section.subtitle|linebreaksbr }}</p>{% endif %}
+    </div>
+    {% endif %}
+    {% if categories|length > 1 %}
+    <div class="filter-bar" role="group" aria-label="Kategori filtresi">
+      <button type="button" class="chip is-active" data-filter="*" aria-pressed="true">{% t "genel.tumu" %}</button>
+      {% for c in categories %}<button type="button" class="chip" data-filter="{{ c.slug }}" aria-pressed="false">{{ c.name }}</button>{% endfor %}
+    </div>
+    {% endif %}
+    {% if images %}
+    <div class="gallery-grid" data-lightbox>
+      {% for img in images %}
+      <a class="gallery-item" href="{{ img.image.url }}" data-full="{{ img.image.url }}" data-caption="{{ img.title }}" data-cat="{{ img.category.slug|default:'-' }}">
+        <img src="{{ img.image.url }}" alt="{{ img.title }}" loading="lazy">
+        {% if img.title %}<span class="gallery-item__cap">{{ img.title }}</span>{% endif %}
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty-state">{% t "galeri.bos" %}</p>
+    {% endif %}
+  </div>
+</section>

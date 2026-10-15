@@ -1,0 +1,15 @@
+{% extends "panel/base.html" %}
+{% block title %}Yeni sayfa{% endblock %}
+{% block crumbs %}<a href="{% url 'panel:dashboard' %}">Panel</a><span>/</span><a href="{% url 'panel:list' 'sayfalar' %}">Sayfalar</a><span>/</span><span>Yeni</span>{% endblock %}
+{% block content %}
+<form method="post" enctype="multipart/form-data" class="card card--narrow" novalidate>
+  {% csrf_token %}
+  <p class="eyebrow">Sayfalar</p>
+  <h1 class="page-title">Yeni sayfa</h1>
+  <p class="muted">Sayfayı oluşturduktan sonra bölümlerini (başlık, metin, görsel, SSS, iletişim formu…) ekleyebilirsiniz.</p>
+  <div class="form-grid" style="margin-top:24px">
+    {% for f in form %}{% include "panel/partials/field.html" %}{% endfor %}
+  </div>
+  <div class="btn-row" style="margin-top:24px"><button type="submit" class="btn btn--primary">Sayfayı oluştur</button><a class="btn btn--ghost" href="{% url 'panel:list' 'sayfalar' %}">Vazgeç</a></div>
+</form>
+{% endblock %}

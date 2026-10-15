@@ -1,0 +1,27 @@
+{% load site_tags %}
+{% if words %}
+<section class="section capabilities theme-{{ theme }}"{% if section.anchor %} id="{{ section.anchor }}"{% endif %} data-wheel>
+  <div class="container">
+    {% if section.eyebrow %}<div class="capabilities__head"><h2 class="display">{{ section.eyebrow }}</h2></div>{% endif %}
+    <div class="capabilities__grid">
+      <div class="wheel" aria-label="{{ section.title|plain|default:section.eyebrow }}">
+        {% for w in words %}<button type="button" class="wheel__word{% if forloop.first %} is-active{% endif %}">{{ w.title }}</button>{% endfor %}
+      </div>
+      <div>
+        {% if section.title %}<h3 class="display t-m" style="margin-bottom:24px">{{ section.title|fancy }}</h3>{% endif %}
+        {% if section.subtitle %}<p class="capabilities__intro">{{ section.subtitle|linebreaksbr }}</p>{% endif %}
+        <div class="capabilities__panel" aria-live="polite">
+          {% for w in words %}
+          <div data-index="{{ forloop.counter0 }}"{% if not forloop.first %} hidden{% endif %}>
+            <p class="capabilities__desc">{{ w.text|default:w.title|linebreaksbr }}</p>
+            {% if w.url %}<a class="link-arrow" href="{{ w.url }}">{% t "genel.detaylar" %} <svg class="ico"><use href="#i-arrow-up-right"/></svg></a>{% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        <div class="capabilities__dots">{% for w in words %}<button type="button" aria-label="{{ w.title }}"{% if forloop.first %} class="is-active"{% endif %}></button>{% endfor %}</div>
+        {% if section.button_text %}<div class="btn-row" style="margin-top:40px"><a class="btn" href="{{ section.button_url|default:'/hizmetler/' }}">{{ section.button_text }}</a></div>{% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}

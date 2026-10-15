@@ -1,0 +1,11 @@
+<div class="upload" data-upload>
+  <div class="upload__preview"><svg class="ico"><use href="#i-play"/></svg></div>
+  <div class="upload__body">
+    <label class="upload__drop">
+      <input type="{{ widget.type }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
+      <span class="upload__cta"><svg class="ico"><use href="#i-upload"/></svg><span><strong>Dosya seç</strong> veya buraya sürükle</span></span>
+      <span class="upload__name" data-upload-name>{% if widget.is_initial %}<a href="{{ widget.value.url }}" target="_blank" rel="noopener">{{ widget.value.name }}</a>{% else %}MP4 veya WEBM{% endif %}</span>
+    </label>
+    {% if widget.is_initial and not widget.required %}<label class="check-inline"><input type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}"> Dosyayı kaldır</label>{% endif %}
+  </div>
+</div>

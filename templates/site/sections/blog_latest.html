@@ -1,0 +1,17 @@
+{% load site_tags %}
+{% if posts %}
+<section class="section theme-{{ theme }}"{% if section.anchor %} id="{{ section.anchor }}"{% endif %}>
+  <div class="container">
+    <div class="section-head">
+      <div>
+        {% if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}
+        {% if section.title %}<h2 class="section-head__title display t-l reveal">{{ section.title|fancy }}</h2>{% endif %}
+      </div>
+      {% if section.button_text %}<a class="link-arrow" href="{{ section.button_url|default:'/blog/' }}">{{ section.button_text }} <svg class="ico"><use href="#i-arrow-up-right"/></svg></a>{% endif %}
+    </div>
+    <div class="post-grid">
+      {% for post in posts %}<div class="reveal" style="--d:{{ forloop.counter0 }}00ms">{% include "site/includes/post_card.html" %}</div>{% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}

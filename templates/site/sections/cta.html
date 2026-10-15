@@ -1,0 +1,17 @@
+{% load site_tags %}
+<section class="section cta theme-{{ theme }}"{% if section.anchor %} id="{{ section.anchor }}"{% endif %}>
+  <div class="container">
+    {% if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}
+    <div class="cta__inner">
+      <div>
+        <h2 class="cta__title display reveal">{{ section.title|fancy }}</h2>
+        {% if section.subtitle %}<p class="cta__sub serif reveal" style="--d:.1s">{{ section.subtitle|fancy }}</p>{% endif %}
+      </div>
+      <div class="btn-row reveal" style="--d:.2s">
+        {% if section.button_text %}<a class="btn btn--lg" href="{{ section.button_url|default:'/iletisim/' }}">{{ section.button_text }} <svg class="ico"><use href="#i-arrow-up-right"/></svg></a>{% endif %}
+        {% if section.button2_text %}<a class="link-arrow" href="{{ section.button2_url|default:'#' }}">{{ section.button2_text }} <svg class="ico"><use href="#i-arrow-up-right"/></svg></a>{% endif %}
+      </div>
+    </div>
+  </div>
+  {% if section.image %}<div class="cta__media"><img src="{{ section.image.url }}" alt="" loading="lazy"></div>{% endif %}
+</section>

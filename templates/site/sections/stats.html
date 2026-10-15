@@ -1,0 +1,16 @@
+{% load site_tags %}
+<section class="section section--tight stats theme-{{ theme }}"{% if section.anchor %} id="{{ section.anchor }}"{% endif %}>
+  <div class="container">
+    {% if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}
+    {% if section.title %}<h2 class="stats__title display reveal">{{ section.title|fancy }}</h2>{% endif %}
+    <div class="stats__grid">
+      {% for item in items %}
+      <div class="stat reveal" style="--d:{{ forloop.counter0 }}00ms">
+        <div class="stat__value" data-count="{{ item.value }}">{{ item.value }}</div>
+        <div class="stat__label">{{ item.title }}</div>
+        {% if item.text %}<p class="stat__text">{{ item.text }}</p>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

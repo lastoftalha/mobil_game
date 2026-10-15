@@ -1,0 +1,42 @@
+{% extends "panel/base.html" %}
+{% block title %}Mesaj · {{ msg.name }}{% endblock %}
+{% block crumbs %}<a href="{% url 'panel:dashboard' %}">Panel</a><span>/</span><a href="{% url 'panel:list' 'mesajlar' %}">Mesajlar</a><span>/</span><span>{{ msg.name }}</span>{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><p class="eyebrow">{{ msg.created_at|date:"j F Y, H:i" }}</p><h1 class="page-title">{{ msg.name }}</h1><p class="muted">{{ msg.company|default:"" }}</p></div>
+  <div class="page-head__actions">
+    {% if prev_id %}<a class="btn btn--ghost" href="{% url 'panel:message_detail' prev_id %}">← Yeni</a>{% endif %}
+    {% if next_id %}<a class="btn btn--ghost" href="{% url 'panel:message_detail' next_id %}">Eski →</a>{% endif %}
+    <a class="btn btn--primary" href="mailto:{{ msg.email }}?subject={{ 'Bitasarımlazım – talebiniz hakkında'|urlencode }}"><svg class="ico"><use href="#i-mail"/></svg>Yanıtla</a>
+  </div>
+</div>
+<div class="editor__grid">
+  <div class="editor__main">
+    <section class="card">
+      <h2 class="card__title">Mesaj</h2>
+      <div class="message-body">{{ msg.message|linebreaks }}</div>
+    </section>
+    <form method="post" class="card">
+      {% csrf_token %}
+      <h2 class="card__title">İç not</h2>
+      {% include "panel/partials/field.html" with f=form.note %}
+      <div class="btn-row" style="margin-top:14px"><button type="submit" class="btn btn--primary btn--sm">Notu kaydet</button><button type="submit" name="_unread" class="btn btn--ghost btn--sm">Okunmadı yap</button></div>
+    </form>
+  </div>
+  <aside class="editor__side">
+    <section class="card">
+      <h2 class="card__title">Gönderen</h2>
+      <dl class="meta meta--lg">
+        <div><dt>E-posta</dt><dd><a href="mailto:{{ msg.email }}">{{ msg.email }}</a></dd></div>
+        {% if msg.phone %}<div><dt>Telefon</dt><dd><a href="tel:{{ msg.phone }}">{{ msg.phone }}</a></dd></div>{% endif %}
+        {% if msg.company %}<div><dt>Şirket</dt><dd>{{ msg.company }}</dd></div>{% endif %}
+        {% if msg.service %}<div><dt>Hizmet</dt><dd>{{ msg.service }}</dd></div>{% endif %}
+        <div><dt>İletişim izni</dt><dd>{% if msg.consent %}Verildi{% else %}Yok{% endif %}</dd></div>
+        {% if msg.page_url %}<div><dt>Sayfa</dt><dd><code>{{ msg.page_url }}</code></dd></div>{% endif %}
+        {% if msg.ip_address %}<div><dt>IP</dt><dd>{{ msg.ip_address }}</dd></div>{% endif %}
+      </dl>
+      <a class="link-btn link-btn--danger" href="{% url 'panel:delete' 'mesajlar' msg.pk %}"><svg class="ico"><use href="#i-trash-2"/></svg>Mesajı sil</a>
+    </section>
+  </aside>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "panel/base.html" %}
+{% block title %}{% if is_new %}Yeni {{ res.label|lower }}{% else %}{{ obj }}{% endif %}{% endblock %}
+{% block crumbs %}<a href="{% url 'panel:dashboard' %}">Panel</a><span>/</span><a href="{% url 'panel:list' res.key %}">{{ res.label_plural }}</a><span>/</span><span>{% if is_new %}Yeni{% else %}{{ obj|truncatechars:40 }}{% endif %}</span>{% endblock %}
+{% block content %}
+<form method="post" enctype="multipart/form-data" class="editor" novalidate data-unsaved>
+  {% csrf_token %}
+  <div class="page-head">
+    <div>
+      <p class="eyebrow">{{ res.label_plural }}</p>
+      <h1 class="page-title">{% if is_new %}Yeni {{ res.label|lower }}{% else %}{{ obj|truncatechars:60 }}{% endif %}</h1>
+    </div>
+    <div class="page-head__actions">
+      {% if view_url %}<a class="btn btn--ghost" href="{{ view_url }}" target="_blank" rel="noopener"><svg class="ico"><use href="#i-eye"/></svg>Sitede gör</a>{% endif %}
+      <button type="submit" class="btn btn--primary"><svg class="ico"><use href="#i-save"/></svg>Kaydet</button>
+    </div>
+  </div>
+
+  {% if form.non_field_errors %}<div class="alert alert--error">{% for e in form.non_field_errors %}{{ e }} {% endfor %}</div>{% endif %}
+
+  <div class="editor__grid">
+    <div class="editor__main">
+      <section class="card" data-tabs>
+        {% if tabs|length > 1 %}
+        <div class="tabs" role="tablist">
+          {% for tab in tabs %}<button type="button" class="tab{% if forloop.first %} is-active{% endif %}{% if tab.has_errors %} has-error{% endif %}" data-tab="t{{ forloop.counter }}" role="tab">{{ tab.title }}</button>{% endfor %}
+        </div>
+        {% endif %}
+        {% for tab in tabs %}
+        <div class="tab-panel form-grid" data-tab-panel="t{{ forloop.counter }}"{% if not forloop.first %} hidden{% endif %}>
+          {% for f in tab.fields %}{% include "panel/partials/field.html" %}{% endfor %}
+        </div>
+        {% endfor %}
+      </section>
+      {% for fs in formsets %}
+        {% include "panel/partials/formset.html" with fs=fs title=fs.inline.label item_label=fs.inline.item_label bulk=fs.inline.bulk_field %}
+      {% endfor %}
+    </div>
+    <aside class="editor__side">
+      <div class="card sticky">
+        <h2 class="card__title">Yayın</h2>
+        <div class="stack">
+          <button type="submit" class="btn btn--primary btn--block"><svg class="ico"><use href="#i-save"/></svg>Kaydet</button>
+          <button type="submit" name="_list" class="btn btn--ghost btn--block">Kaydet ve listeye dön</button>
+          {% if res.can_create %}<button type="submit" name="_addanother" class="btn btn--ghost btn--block">Kaydet ve yeni ekle</button>{% endif %}
+        </div>
+        {% if not is_new %}
+        <dl class="meta">
+          {% if obj.created_at %}<div><dt>Oluşturulma</dt><dd>{{ obj.created_at|date:"d.m.Y H:i" }}</dd></div>{% endif %}
+          {% if obj.updated_at %}<div><dt>Son güncelleme</dt><dd>{{ obj.updated_at|date:"d.m.Y H:i" }}</dd></div>{% endif %}
+        </dl>
+        {% if res.can_delete %}<a class="link-btn link-btn--danger" href="{% url 'panel:delete' res.key obj.pk %}"><svg class="ico"><use href="#i-trash-2"/></svg>Bu kaydı sil</a>{% endif %}
+        {% endif %}
+      </div>
+    </aside>
+  </div>
+</form>
+{% endblock %}

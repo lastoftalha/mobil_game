@@ -1,0 +1,25 @@
+{% extends "panel/base.html" %}
+{% block title %}Site ayarları{% endblock %}
+{% block crumbs %}<a href="{% url 'panel:dashboard' %}">Panel</a><span>/</span><span>Site ayarları</span>{% endblock %}
+{% block content %}
+<form method="post" enctype="multipart/form-data" novalidate data-unsaved data-tabs data-tab-hash>
+  {% csrf_token %}
+  <input type="hidden" name="_tab" value="" data-tab-input>
+  <div class="page-head">
+    <div><p class="eyebrow">Site</p><h1 class="page-title">Site ayarları</h1><p class="muted">Logo, renkler, iletişim bilgileri, SEO ve genel ayarlar.</p></div>
+    <div class="page-head__actions"><button type="submit" class="btn btn--primary"><svg class="ico"><use href="#i-save"/></svg>Kaydet</button></div>
+  </div>
+  <section class="card">
+    <div class="tabs" role="tablist">
+      {% for tab in tabs %}<button type="button" class="tab{% if forloop.first %} is-active{% endif %}{% if tab.has_errors %} has-error{% endif %}" data-tab="{{ tab.key }}" role="tab">{{ tab.title }}</button>{% endfor %}
+    </div>
+    {% for tab in tabs %}
+    <div class="tab-panel form-grid" data-tab-panel="{{ tab.key }}"{% if not forloop.first %} hidden{% endif %}>
+      {% if tab.key == "renkler" %}<p class="field--wide muted small">Renkler sitenin tamamında anında uygulanır. Varsayılanlar: sarı #F6C500, koyu #0F1012, gri #2F3136.</p>{% endif %}
+      {% if tab.key == "kodlar" %}<div class="field--wide alert alert--warning">Buraya eklenen kodlar tüm sayfalarda çalışır. Sadece güvendiğiniz kaynaklardan (Google Analytics, Meta Pixel vb.) kod ekleyin.</div>{% endif %}
+      {% for f in tab.fields %}{% include "panel/partials/field.html" %}{% endfor %}
+    </div>
+    {% endfor %}
+  </section>
+</form>
+{% endblock %}

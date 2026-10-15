@@ -1,0 +1,28 @@
+{% load site_tags %}
+<section class="section theme-{{ theme }}"{% if section.anchor %} id="{{ section.anchor }}"{% endif %}>
+  <div class="container">
+    {% if section.title or section.eyebrow or section.subtitle %}
+    <div class="section-head">
+      <div>
+        {% if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}
+        {% if section.title %}<h2 class="section-head__title display t-l reveal">{{ section.title|fancy }}</h2>{% endif %}
+      </div>
+      {% if section.subtitle %}<p class="lead muted" style="max-width:46ch">{{ section.subtitle|linebreaksbr }}</p>{% endif %}
+    </div>
+    {% endif %}
+    <div class="service-rows">
+      {% for service in services %}
+      <a class="service-row" href="{{ service.get_absolute_url }}"{% if service.card_image %} data-preview="{{ service.card_image.url }}"{% endif %}>
+        <span class="service-row__num">{{ forloop.counter|stringformat:"03d" }}</span>
+        <h3 class="service-row__title">{{ service.title }}</h3>
+        <div class="service-row__desc">
+          {% if service.short_description %}<p>{{ service.short_description|truncatechars:150 }}</p>{% endif %}
+          {% if service.tag_list %}<div class="service-row__tags">{% for tag in service.tag_list|slice:":4" %}<span class="tag">{{ tag }}</span>{% endfor %}</div>{% endif %}
+        </div>
+        <span class="service-row__arrow" aria-hidden="true"><svg class="ico"><use href="#i-arrow-up-right"/></svg></span>
+        {% if service.card_image %}<div class="service-row__thumb"><img src="{{ service.card_image.url }}" alt="" loading="lazy"></div>{% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,77 @@
+{% extends "panel/base.html" %}
+{% block title %}Panel{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">{{ now|date:"l, j F Y" }}</p>
+    <h1 class="page-title">Merhaba, {{ request.user.first_name|default:request.user.get_username }}</h1>
+    <p class="muted">Sitenizdeki tüm içerikleri buradan yönetebilirsiniz.</p>
+  </div>
+  <div class="page-head__actions">
+    {% if home_page %}<a class="btn btn--primary" href="{% url 'panel:page_builder' home_page.pk %}"><svg class="ico"><use href="#i-house"/></svg>Ana sayfayı düzenle</a>{% endif %}
+    <a class="btn btn--ghost" href="{% url 'panel:create' 'blog' %}"><svg class="ico"><use href="#i-plus"/></svg>Yeni blog yazısı</a>
+  </div>
+</div>
+
+<div class="stat-grid">
+  {% for label, value, icon, url in stats %}
+  <a class="stat-card" href="{{ url }}"><span class="stat-card__icon"><svg class="ico"><use href="#i-{{ icon }}"/></svg></span><strong>{{ value }}</strong><span>{{ label }}</span></a>
+  {% endfor %}
+</div>
+
+<div class="grid-2">
+  <section class="card">
+    <header class="card__head"><h2 class="card__title">Son mesajlar {% if unread_count %}<span class="count count--brand">{{ unread_count }} yeni</span>{% endif %}</h2><a class="link-btn" href="{% url 'panel:list' 'mesajlar' %}">Tümü →</a></header>
+    {% if recent_messages %}
+    <ul class="list">
+      {% for m in recent_messages %}
+      <li><a class="list__row{% if not m.is_read %} is-unread{% endif %}" href="{% url 'panel:message_detail' m.pk %}">
+        <span class="avatar-sm">{{ m.name|slice:":1"|upper }}</span>
+        <span class="list__main"><strong>{{ m.name }}</strong><small>{{ m.service|default:m.email }} · {{ m.message|truncatechars:60 }}</small></span>
+        <small class="muted">{{ m.created_at|timesince }} önce</small>
+      </a></li>
+      {% endfor %}
+    </ul>
+    {% else %}<p class="empty-hint">Henüz mesaj yok.</p>{% endif %}
+  </section>
+
+  <section class="card">
+    <header class="card__head"><h2 class="card__title">Sayfalar</h2><a class="link-btn" href="{% url 'panel:page_create' %}">+ Yeni sayfa</a></header>
+    <ul class="list">
+      {% for p in pages %}
+      <li><a class="list__row" href="{% url 'panel:page_builder' p.pk %}">
+        <span class="avatar-sm avatar-sm--icon"><svg class="ico"><use href="#i-{% if p.is_home %}house{% else %}file-text{% endif %}"/></svg></span>
+        <span class="list__main"><strong>{{ p.title }}</strong><small>{% if p.is_home %}/{% else %}/{{ p.slug }}/{% endif %}</small></span>
+        {% if not p.is_published %}<span class="badge badge--muted">Taslak</span>{% endif %}
+      </a></li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section class="card">
+    <header class="card__head"><h2 class="card__title">En çok okunan yazılar</h2><a class="link-btn" href="{% url 'panel:list' 'blog' %}">Blog →</a></header>
+    <ul class="list">
+      {% for p in top_posts %}
+      <li><a class="list__row" href="{% url 'panel:edit' 'blog' p.pk %}">
+        {% if p.cover %}<img class="thumb" src="{{ p.cover.url }}" alt="">{% endif %}
+        <span class="list__main"><strong>{{ p.title }}</strong><small>{{ p.published_at|date:"j M Y" }}</small></span>
+        <span class="badge"><svg class="ico"><use href="#i-eye"/></svg>{{ p.views }}</span>
+      </a></li>
+      {% empty %}<li class="empty-hint">Henüz yazı yok.</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section class="card">
+    <header class="card__head"><h2 class="card__title">Hızlı işlemler</h2></header>
+    <div class="quick-grid">
+      <a class="quick" href="{% url 'panel:create' 'portfoy' %}"><svg class="ico"><use href="#i-folder-kanban"/></svg>Yeni proje</a>
+      <a class="quick" href="{% url 'panel:list' 'galeri' %}"><svg class="ico"><use href="#i-images"/></svg>Galeriye görsel yükle</a>
+      <a class="quick" href="{% url 'panel:create' 'hizmetler' %}"><svg class="ico"><use href="#i-briefcase"/></svg>Yeni hizmet</a>
+      <a class="quick" href="{% url 'panel:create' 'referanslar' %}"><svg class="ico"><use href="#i-award"/></svg>Yeni referans</a>
+      <a class="quick" href="{% url 'panel:settings' %}"><svg class="ico"><use href="#i-settings"/></svg>Site ayarları</a>
+      <a class="quick" href="{% url 'panel:list' 'menu' %}"><svg class="ico"><use href="#i-menu"/></svg>Menüyü düzenle</a>
+    </div>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% load panel_tags %}{% with wt=f|widget_type %}{% if wt == "hidden" %}{{ f }}{% else %}
+<div class="field{% if f|is_wide %} field--wide{% endif %}{% if wt == 'switch' %} field--switch{% endif %}{% if f.errors %} has-error{% endif %}">
+  {% if wt == "switch" %}
+  <div class="switch-row">{{ f }}<div><label class="field__label" for="{{ f.id_for_label }}">{{ f.label }}</label>{% if f.help_text %}<p class="field__help">{{ f.help_text }}</p>{% endif %}</div></div>
+  {% else %}
+  <label class="field__label" for="{{ f.id_for_label }}">{{ f.label }}{% if f.field.required %} <span class="req">*</span>{% endif %}</label>
+  {{ f }}
+  {% if f.help_text %}<p class="field__help">{{ f.help_text }}</p>{% endif %}
+  {% endif %}
+  {% for e in f.errors %}<p class="field__error">{{ e }}</p>{% endfor %}
+</div>
+{% endif %}{% endwith %}

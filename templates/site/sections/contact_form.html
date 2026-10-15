@@ -1,0 +1,70 @@
+{% load site_tags %}
+<section class="section theme-{{ theme }}" id="{{ section.anchor|default:'iletisim-formu' }}">
+  <div class="container contact__grid">
+    <div>
+      {% if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}
+      {% if section.title %}<h2 class="contact__title display reveal">{{ section.title|fancy }}</h2>{% endif %}
+      {% if section.subtitle %}<p class="contact__sub">{{ section.subtitle|linebreaksbr }}</p>{% endif %}
+      <div class="contact__lines">
+        {% if site.email %}<div class="contact-line"><small>{% t "form.eposta_baslik" %}</small><a href="mailto:{{ site.email }}">{{ site.email }}</a></div>{% endif %}
+        {% if site.phone %}<div class="contact-line"><small>{% t "form.telefon_baslik" %}</small><a href="tel:{{ site.phone_href }}">{{ site.phone }}</a></div>{% endif %}
+        {% if site.whatsapp_url %}<div class="contact-line"><small>{% t "form.whatsapp_baslik" %}</small><a href="{{ site.whatsapp_url }}" target="_blank" rel="noopener">{% t "genel.whatsapp" %} ↗</a></div>{% endif %}
+      </div>
+      {% if offices %}
+      <div class="contact__offices">
+        {% for office in offices %}
+        <div class="office" style="--dot: {{ office.dot_color }}">
+          <p class="office__name"><i></i>{{ office.name }}</p>
+          <p class="office__addr">{{ office.address }}</p>
+          {% if office.phone %}<p class="office__addr"><a href="tel:{{ office.phone }}">{{ office.phone }}</a></p>{% endif %}
+          {% if office.map_url %}<a class="link-arrow office__map" href="{{ office.map_url }}" target="_blank" rel="noopener">{% t "form.harita" %} <svg class="ico"><use href="#i-arrow-up-right"/></svg></a>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    <div class="form-card reveal">
+      {% if section.body %}<div class="form-intro prose">{{ section.body|safe }}</div>{% endif %}
+      <form method="post" action="{{ page.get_absolute_url }}" novalidate>
+        {% csrf_token %}
+        <div class="hp-field" aria-hidden="true"><label for="cf-website">Web sitesi</label>{{ form.website }}</div>
+        <div class="form-grid">
+          <div class="field{% if form.name.errors %} has-error{% endif %}">
+            <label for="cf-name">{% t "form.ad" %} *</label>
+            <input type="text" name="name" id="cf-name" value="{{ form.name.value|default:'' }}" required maxlength="150" autocomplete="name">
+            {% for e in form.name.errors %}<p class="field__error">{{ e }}</p>{% endfor %}
+          </div>
+          <div class="field{% if form.email.errors %} has-error{% endif %}">
+            <label for="cf-email">{% t "form.eposta" %} *</label>
+            <input type="email" name="email" id="cf-email" value="{{ form.email.value|default:'' }}" required autocomplete="email">
+            {% for e in form.email.errors %}<p class="field__error">{{ e }}</p>{% endfor %}
+          </div>
+          <div class="field">
+            <label for="cf-phone">{% t "form.telefon" %}</label>
+            <input type="tel" name="phone" id="cf-phone" value="{{ form.phone.value|default:'' }}" maxlength="40" autocomplete="tel">
+          </div>
+          <div class="field">
+            <label for="cf-company">{% t "form.sirket" %}</label>
+            <input type="text" name="company" id="cf-company" value="{{ form.company.value|default:'' }}" maxlength="150" autocomplete="organization">
+          </div>
+          <div class="field full">
+            <label for="cf-service">{% t "form.hizmet" %}</label>
+            <select name="service" id="cf-service">
+              {% for value, label in form.fields.service.choices %}<option value="{{ value }}"{% if form.service.value == value %} selected{% endif %}>{% if not value %}{% t "form.hizmet_sec" %}{% else %}{{ label }}{% endif %}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="field full{% if form.message.errors %} has-error{% endif %}">
+            <label for="cf-message">{% t "form.mesaj" %} *</label>
+            <textarea name="message" id="cf-message" rows="5" required>{{ form.message.value|default:'' }}</textarea>
+            {% for e in form.message.errors %}<p class="field__error">{{ e }}</p>{% endfor %}
+          </div>
+          <div class="field full{% if form.consent.errors %} has-error{% endif %}">
+            <label class="consent" for="cf-consent"><input type="checkbox" name="consent" id="cf-consent" required{% if form.consent.value %} checked{% endif %}> <span>{% t "form.izin" %}</span></label>
+            {% for e in form.consent.errors %}<p class="field__error">{{ e }}</p>{% endfor %}
+          </div>
+        </div>
+        <div class="form-actions"><button type="submit" class="btn btn--lg">{% t "form.gonder" %} <svg class="ico"><use href="#i-arrow-up-right"/></svg></button></div>
+      </form>
+    </div>
+  </div>
+</section>

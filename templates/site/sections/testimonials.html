@@ -1,0 +1,37 @@
+{% load site_tags %}
+{% if testimonials %}
+<section class="section theme-{{ theme }}"{% if section.anchor %} id="{{ section.anchor }}"{% endif %} data-slider>
+  <div class="container">
+    <div class="testimonials__head">
+      <div>
+        {% if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}
+        {% if section.title %}<h2 class="display t-l reveal">{{ section.title|fancy }}</h2>{% endif %}
+        {% if section.subtitle %}<div class="testimonials__rating" style="margin-top:18px"><span class="stars">{% for _ in "12345" %}<svg class="ico"><use href="#i-star"/></svg>{% endfor %}</span><span>{{ section.subtitle }}</span></div>{% endif %}
+      </div>
+      {% if testimonials|length > 1 %}
+      <div class="slider__nav">
+        <button type="button" class="slider__btn" data-slide="-1" aria-label="Önceki"><svg class="ico"><use href="#i-arrow-left"/></svg></button>
+        <button type="button" class="slider__btn" data-slide="1" aria-label="Sonraki"><svg class="ico"><use href="#i-arrow-right"/></svg></button>
+      </div>
+      {% endif %}
+    </div>
+    <div class="slider__track">
+      {% for item in testimonials %}
+      <figure class="quote-card">
+        <div>
+          <span class="stars" aria-label="{{ item.rating }}/5">{% with r=item.rating %}{% for i in "12345" %}{% if forloop.counter <= r %}<svg class="ico"><use href="#i-star"/></svg>{% endif %}{% endfor %}{% endwith %}</span>
+          <blockquote class="quote-card__text" style="margin-top:18px">“{{ item.quote }}”</blockquote>
+        </div>
+        <div>
+          {% if item.metric_value %}<div class="quote-card__metric" style="margin-bottom:22px"><strong>{{ item.metric_value }}</strong><span>{{ item.metric_label }}</span></div>{% endif %}
+          <figcaption class="quote-card__who">
+            <span class="avatar">{% if item.avatar %}<img src="{{ item.avatar.url }}" alt="" loading="lazy">{% else %}{{ item.initials }}{% endif %}</span>
+            <span><span class="quote-card__name">{{ item.name }}</span><br><span class="quote-card__role">{{ item.role }}</span></span>
+          </figcaption>
+        </div>
+      </figure>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}

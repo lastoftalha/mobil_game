@@ -1,0 +1,66 @@
+{% load site_tags %}
+<footer class="site-footer" id="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a href="/" class="footer__logo" aria-label="{{ site.site_name }}"><img src="{% logo_url 'logo_footer' %}" alt="{{ site.site_name }}" loading="lazy" width="260" height="120"></a>
+        {% if site.footer_tagline %}<p class="footer__tagline">{{ site.footer_tagline }}</p>{% endif %}
+        {% if site.footer_about %}<p class="footer__about">{{ site.footer_about|linebreaksbr }}</p>{% endif %}
+        <div class="footer__contact">
+          {% if site.email %}<a href="mailto:{{ site.email }}">{{ site.email }}</a>{% endif %}
+          {% if site.phone %}<a href="tel:{{ site.phone_href }}">{{ site.phone }}</a>{% endif %}
+        </div>
+      </div>
+      {% if footer_nav %}
+      <div class="footer__col">
+        <h3>{% t "footer.site_haritasi" %}</h3>
+        <ul>{% for item in footer_nav %}<li><a href="{{ item.url }}"{% if item.open_in_new_tab %} target="_blank" rel="noopener"{% endif %}>{{ item.label }}</a></li>{% endfor %}</ul>
+      </div>
+      {% endif %}
+      {% if offices %}
+      <div class="footer__col">
+        <h3>{% t "footer.ofisler" %}</h3>
+        {% for office in offices %}
+        <div class="footer__office" style="--dot: {{ office.dot_color }}">
+          <strong><i></i>{{ office.name }}</strong>
+          <p>{{ office.address }}</p>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% if footer_services %}
+      <div class="footer__col">
+        <h3>{% t "footer.hizmetler" %}</h3>
+        <ul>{% for s in footer_services %}<li><a href="{{ s.get_absolute_url }}">{{ s.title }}</a></li>{% endfor %}</ul>
+      </div>
+      {% endif %}
+      {% if socials %}
+      <div class="footer__col">
+        <h3>{% t "footer.sosyal" %}</h3>
+        {% include "partials/socials.html" %}
+      </div>
+      {% endif %}
+    </div>
+
+    {% if site.newsletter_enabled %}
+    <div class="footer__news">
+      <h3>{% t "footer.bulten_baslik" %}</h3>
+      <form class="news-form" method="post" action="{% url 'newsletter_subscribe' %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <label class="sr-only" for="news-email">{% t "footer.bulten_placeholder" %}</label>
+        <input id="news-email" type="email" name="email" required placeholder="{% t 'footer.bulten_placeholder' %}" autocomplete="email">
+        <button type="submit">{% t "footer.bulten_buton" %}</button>
+      </form>
+    </div>
+    {% endif %}
+
+    <div class="footer__bottom">
+      <span>{{ site.copyright_text|year_fmt:current_year }}</span>
+      <nav aria-label="Alt bağlantılar">
+        <a href="#main">{% t "genel.yukari" %} ↑</a>
+      </nav>
+    </div>
+  </div>
+  <div class="footer__giant" aria-hidden="true"><span>{{ site.site_name }}</span></div>
+</footer>

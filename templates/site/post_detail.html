@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load site_tags %}
+{% block content %}
+<article>
+  <header class="section theme-dark" style="padding-bottom:clamp(40px,5vw,72px)">
+    <div class="container post-head">
+      <ol class="breadcrumb" aria-label="Konum">
+        <li><a href="/">{% t "genel.anasayfa" %}</a></li>
+        <li><a href="/blog/">Blog</a></li>
+        {% if post.category %}<li><a href="/blog/?kategori={{ post.category.slug }}">{{ post.category.name }}</a></li>{% endif %}
+      </ol>
+      <h1 class="post-head__title reveal">{{ post.title }}</h1>
+      {% if post.excerpt %}<p class="post-head__lead reveal" style="--d:.1s">{{ post.excerpt }}</p>{% endif %}
+      <div class="post-meta">
+        <span><svg class="ico"><use href="#i-calendar"/></svg>{{ post.published_at|date:"j F Y" }}</span>
+        {% if post.author_name %}<span><svg class="ico"><use href="#i-user"/></svg>{{ post.author_name }}</span>{% endif %}
+        <span><svg class="ico"><use href="#i-clock"/></svg>{{ post.minutes }} {% t "blog.dk" %}</span>
+        <span><svg class="ico"><use href="#i-eye"/></svg>{{ post.views }}</span>
+      </div>
+    </div>
+  </header>
+  {% if post.cover %}<div class="container" style="max-width:1200px"><div class="detail-cover" style="aspect-ratio:16/8"><img src="{{ post.cover.url }}" alt="{{ post.title }}"></div></div>{% endif %}
+  <section class="section theme-dark" style="padding-top:clamp(48px,6vw,96px)">
+    <div class="container">
+      <div class="post-body prose">{{ post.body|safe }}</div>
+      <div class="post-foot">
+        {% if post.tag_list %}<div class="tags-row"><strong style="margin-right:6px">{% t "blog.etiketler" %}:</strong>{% for tag in post.tag_list %}<span class="tag">#{{ tag }}</span>{% endfor %}</div>{% endif %}
+        {% absolute post.get_absolute_url as share_url %}
+        <div class="share">
+          <strong style="margin-right:6px">{% t "blog.paylas" %}:</strong>
+          <a href="https://www.facebook.com/sharer/sharer.php?u={{ share_url|urlq }}" target="_blank" rel="noopener" aria-label="Facebook"><svg class="ico"><use href="#s-facebook"/></svg></a>
+          <a href="https://twitter.com/intent/tweet?url={{ share_url|urlq }}&amp;text={{ post.title|urlq }}" target="_blank" rel="noopener" aria-label="X"><svg class="ico"><use href="#s-x"/></svg></a>
+          <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ share_url|urlq }}" target="_blank" rel="noopener" aria-label="LinkedIn"><svg class="ico"><use href="#s-linkedin"/></svg></a>
+          <a href="https://wa.me/?text={{ post.title|urlq }}%20{{ share_url|urlq }}" target="_blank" rel="noopener" aria-label="WhatsApp"><svg class="ico"><use href="#s-whatsapp"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</article>
+{% if related_posts %}
+<section class="section theme-gray">
+  <div class="container">
+    <div class="section-head"><h2 class="section-head__title display t-l">{% t "blog.ilgili" %}</h2><a class="link-arrow" href="/blog/">Blog <svg class="ico"><use href="#i-arrow-up-right"/></svg></a></div>
+    <div class="post-grid">{% for post in related_posts %}{% include "site/includes/post_card.html" %}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

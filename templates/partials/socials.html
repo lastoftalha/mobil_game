@@ -1,0 +1,7 @@
+{% if socials %}
+<ul class="socials">
+  {% for s in socials %}
+  <li><a href="{{ s.url }}" target="_blank" rel="noopener" aria-label="{{ s.display_name }}" title="{{ s.display_name }}">{% if s.platform == "other" %}<svg class="ico"><use href="#i-link"/></svg>{% else %}<svg class="ico"><use href="#s-{{ s.platform }}"/></svg>{% endif %}</a></li>
+  {% endfor %}
+</ul>
+{% endif %}

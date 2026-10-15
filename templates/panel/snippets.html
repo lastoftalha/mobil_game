@@ -1,0 +1,30 @@
+{% extends "panel/base.html" %}
+{% block title %}Sabit metinler{% endblock %}
+{% block crumbs %}<a href="{% url 'panel:dashboard' %}">Panel</a><span>/</span><span>Sabit metinler</span>{% endblock %}
+{% block content %}
+<form method="post" novalidate data-unsaved>
+  {% csrf_token %}
+  <div class="page-head">
+    <div><p class="eyebrow">Site</p><h1 class="page-title">Sabit metinler</h1><p class="muted">Buton yazıları, form etiketleri, detay sayfası başlıkları gibi sitedeki tüm küçük metinler. Boş bırakılan alan varsayılana döner.</p></div>
+    <div class="page-head__actions">
+      <label class="search"><svg class="ico"><use href="#i-search"/></svg><input type="search" class="input" placeholder="Metin ara…" data-snippet-search></label>
+      <button type="submit" class="btn btn--primary"><svg class="ico"><use href="#i-save"/></svg>Kaydet</button>
+    </div>
+  </div>
+  {% for group, rows in groups.items %}
+  <section class="card snippet-group" data-snippet-group>
+    <h2 class="card__title">{{ group }}</h2>
+    <div class="snippet-list">
+      {% for r in rows %}
+      <div class="snippet{% if r.custom %} is-custom{% endif %}" data-snippet data-search="{{ r.key }} {{ r.default|lower }} {{ r.value|lower }}">
+        <label for="{{ r.field }}"><code>{{ r.key }}</code>{% if r.custom %}<span class="badge badge--brand">Düzenlendi</span>{% endif %}</label>
+        {% if r.long %}<textarea class="input" rows="2" name="{{ r.field }}" id="{{ r.field }}" data-default="{{ r.default }}">{{ r.value }}</textarea>{% else %}<input class="input" type="text" name="{{ r.field }}" id="{{ r.field }}" value="{{ r.value }}" data-default="{{ r.default }}">{% endif %}
+        <button type="button" class="icon-btn" title="Varsayılana döndür: {{ r.default }}" data-snippet-reset><svg class="ico"><use href="#i-refresh-cw"/></svg></button>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endfor %}
+  <p class="muted small">İpucu: [kelime] sarı vurgu kutusu, {kelime} serif yazı yapar (başlık metinlerinde).</p>
+</form>
+{% endblock %}

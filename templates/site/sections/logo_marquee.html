@@ -1,0 +1,22 @@
+{% load site_tags %}
+{% if brands %}
+<section class="section section--tight logo-band theme-{{ theme }}"{% if section.anchor %} id="{{ section.anchor }}"{% endif %}>
+  {% if section.title or section.eyebrow %}
+  <div class="container logo-band__head">
+    {% if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}
+    {% if section.title %}<h2 class="display t-m">{{ section.title|fancy }}</h2>{% endif %}
+  </div>
+  {% endif %}
+  <div class="marquee" style="--speed: {{ brands|length|add:20 }}s">
+    {% for _ in "12" %}
+    <div class="marquee__track pause-hover"{% if not forloop.first %} aria-hidden="true"{% endif %}>
+      {% for brand in brands %}
+      {% if brand.url %}<a class="logo-tile{% if brand.monochrome %} logo-tile--mono{% endif %}" href="{{ brand.url }}" target="_blank" rel="noopener" title="{{ brand.name }}"{% if not forloop.parentloop.first %} tabindex="-1"{% endif %}>{% else %}<span class="logo-tile{% if brand.monochrome %} logo-tile--mono{% endif %}" title="{{ brand.name }}">{% endif %}
+        <img src="{{ brand.logo.url }}" alt="{{ brand.name }}" loading="lazy">
+      {% if brand.url %}</a>{% else %}</span>{% endif %}
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}

@@ -1,0 +1,12 @@
+{% extends "panel/base.html" %}
+{% block title %}{% if is_new %}Yeni kullanıcı{% else %}{{ obj.username }}{% endif %}{% endblock %}
+{% block crumbs %}<a href="{% url 'panel:dashboard' %}">Panel</a><span>/</span><a href="{% url 'panel:users' %}">Kullanıcılar</a><span>/</span><span>{% if is_new %}Yeni{% else %}{{ obj.username }}{% endif %}</span>{% endblock %}
+{% block content %}
+<form method="post" class="card card--narrow" novalidate>
+  {% csrf_token %}
+  <p class="eyebrow">Kullanıcılar</p>
+  <h1 class="page-title">{% if is_new %}Yeni kullanıcı{% else %}{{ obj.username }}{% endif %}</h1>
+  <div class="form-grid" style="margin-top:24px">{% for f in form %}{% include "panel/partials/field.html" %}{% endfor %}</div>
+  <div class="btn-row" style="margin-top:24px"><button type="submit" class="btn btn--primary">Kaydet</button><a class="btn btn--ghost" href="{% url 'panel:users' %}">Vazgeç</a></div>
+</form>
+{% endblock %}

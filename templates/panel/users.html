@@ -1,0 +1,32 @@
+{% extends "panel/base.html" %}
+{% block title %}Kullanıcılar{% endblock %}
+{% block crumbs %}<a href="{% url 'panel:dashboard' %}">Panel</a><span>/</span><span>Kullanıcılar</span>{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><p class="eyebrow">Hesap</p><h1 class="page-title">Kullanıcılar <span class="count">{{ users|length }}</span></h1><p class="muted">Panele erişebilen kişiler. Editörler içerikleri yönetir; tam yetkili yöneticiler kullanıcıları ve özel kodları da yönetebilir.</p></div>
+  <div class="page-head__actions"><a class="btn btn--primary" href="{% url 'panel:user_create' %}"><svg class="ico"><use href="#i-plus"/></svg>Yeni kullanıcı</a></div>
+</div>
+<div class="card card--flush">
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>Kullanıcı</th><th>Ad soyad</th><th>E-posta</th><th>Yetki</th><th>Durum</th><th>Son giriş</th><th></th></tr></thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td class="col-main"><a class="row-link" href="{% url 'panel:user_edit' u.pk %}">{{ u.username }}</a></td>
+          <td>{{ u.get_full_name|default:"—" }}</td>
+          <td>{{ u.email|default:"—" }}</td>
+          <td>{% if u.is_superuser %}<span class="badge badge--brand">Yönetici</span>{% else %}<span class="badge">Editör</span>{% endif %}</td>
+          <td>{% if u.is_active %}<span class="badge badge--ok">Aktif</span>{% else %}<span class="badge badge--muted">Pasif</span>{% endif %}</td>
+          <td>{{ u.last_login|date:"d.m.Y H:i"|default:"—" }}</td>
+          <td class="col-actions"><div class="row-actions">
+            <a class="icon-btn" href="{% url 'panel:user_edit' u.pk %}" title="Düzenle"><svg class="ico"><use href="#i-pencil"/></svg></a>
+            {% if u.pk != request.user.pk %}<form method="post" action="{% url 'panel:user_delete' u.pk %}">{% csrf_token %}<button class="icon-btn icon-btn--danger" type="submit" title="Sil" data-confirm="{{ u.username }} silinsin mi?"><svg class="ico"><use href="#i-trash-2"/></svg></button></form>{% endif %}
+          </div></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

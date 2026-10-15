@@ -1,0 +1,72 @@
+{% load static panel_tags site_tags %}<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{% block title %}Panel{% endblock %} · {{ site.site_name }}</title>
+  <link rel="icon" href="{% static 'site/img/favicon-48.png' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter+Tight:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="{% static 'panel/vendor/quill.snow.css' %}">
+  <link rel="stylesheet" href="{% static 'panel/css/panel.css' %}">
+  {% block head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+{% include "panel/_icons.html" %}
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <a class="sidebar__brand" href="{% url 'panel:dashboard' %}">
+      <img src="{% logo_url 'logo' %}" alt="{{ site.site_name }}">
+      <span>Yönetim</span>
+    </a>
+    <nav class="sidebar__nav" aria-label="Panel menüsü">
+      <a class="nav-link {% nav_active '/panel/' %}" href="{% url 'panel:dashboard' %}"><svg class="ico"><use href="#i-layout-dashboard"/></svg>Panel</a>
+      {% for group, items in nav_groups %}
+      <p class="nav-group">{{ group }}</p>
+      {% for r in items %}
+      {% url 'panel:list' r.key as r_url %}
+      <a class="nav-link {% nav_active r_url %}{% if r.key == 'sayfalar' %}{% nav_active '/panel/bolumler/' %}{% endif %}{% if r.key == 'mesajlar' %}{% nav_active '/panel/mesajlar/' %}{% endif %}" href="{{ r_url }}"><svg class="ico"><use href="#i-{{ r.icon }}"/></svg>{{ r.label_plural }}{% if r.key == 'mesajlar' and unread_count %}<span class="nav-badge">{{ unread_count }}</span>{% endif %}</a>
+      {% endfor %}
+      {% if group == "Site" %}
+      <a class="nav-link {% nav_active '/panel/metinler/' %}" href="{% url 'panel:snippets' %}"><svg class="ico"><use href="#i-type"/></svg>Sabit metinler</a>
+      <a class="nav-link {% nav_active '/panel/ayarlar/' %}" href="{% url 'panel:settings' %}"><svg class="ico"><use href="#i-settings"/></svg>Site ayarları</a>
+      {% endif %}
+      {% endfor %}
+      <p class="nav-group">Hesap</p>
+      {% if request.user.is_superuser %}<a class="nav-link {% nav_active '/panel/kullanicilar/' %}" href="{% url 'panel:users' %}"><svg class="ico"><use href="#i-users"/></svg>Kullanıcılar</a>{% endif %}
+      <a class="nav-link {% nav_active '/panel/hesabim/' %}" href="{% url 'panel:profile' %}"><svg class="ico"><use href="#i-key-round"/></svg>Hesabım</a>
+    </nav>
+    <form method="post" action="{% url 'panel:logout' %}" class="sidebar__foot">
+      {% csrf_token %}
+      <div class="me"><span class="me__avatar">{{ request.user.get_username|slice:":1"|upper }}</span><span><strong>{{ request.user.get_full_name|default:request.user.get_username }}</strong><small>{% if request.user.is_superuser %}Yönetici{% else %}Editör{% endif %}</small></span></div>
+      <button type="submit" class="icon-btn" title="Çıkış yap" aria-label="Çıkış yap"><svg class="ico"><use href="#i-log-out"/></svg></button>
+    </form>
+  </aside>
+  <div class="sidebar-backdrop" data-sidebar-close></div>
+  <div class="main">
+    <header class="topbar">
+      <button type="button" class="icon-btn topbar__menu" data-sidebar-toggle aria-label="Menüyü aç"><svg class="ico"><use href="#i-menu"/></svg></button>
+      <nav class="crumbs" aria-label="Konum">{% block crumbs %}<a href="{% url 'panel:dashboard' %}">Panel</a>{% endblock %}</nav>
+      <div class="topbar__actions">
+        <a class="btn btn--ghost btn--sm" href="/" target="_blank" rel="noopener"><svg class="ico"><use href="#i-external-link"/></svg><span>Siteyi gör</span></a>
+      </div>
+    </header>
+    <main class="content">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+{% if messages %}
+<div class="toasts" role="status" aria-live="polite">
+  {% for message in messages %}<div class="toast toast--{{ message.level_tag }}"><svg class="ico"><use href="#i-{% if message.level_tag == 'error' %}triangle-alert{% elif message.level_tag == 'warning' %}info{% else %}circle-check{% endif %}"/></svg><span>{{ message }}</span><button type="button" class="icon-btn" data-dismiss aria-label="Kapat"><svg class="ico"><use href="#i-x"/></svg></button></div>{% endfor %}
+</div>
+{% endif %}
+<script>window.PANEL = { csrf: "{{ csrf_token }}", uploadUrl: "{% url 'panel:editor_upload' %}" };</script>
+<script src="{% static 'panel/vendor/Sortable.min.js' %}"></script>
+<script src="{% static 'panel/vendor/quill.js' %}"></script>
+<script src="{% static 'panel/js/panel.js' %}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
