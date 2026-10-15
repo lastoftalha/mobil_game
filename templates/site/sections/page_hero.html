@@ -1,5 +1,5 @@
 {% load site_tags %}
-<section class="page-hero theme-{{ theme }}{% if section.image %} page-hero--media{% endif %}"{% if section.anchor %} id="{{ section.anchor }}"{% endif %}>
+<section class="page-hero theme-{{ theme }}{% if section.image %} page-hero--media{% elif hero_links %} page-hero--index{% else %} page-hero--badge{% endif %}"{% if section.anchor %} id="{{ section.anchor }}"{% endif %}>
   <div class="container">
     <ol class="breadcrumb" aria-label="Konum">
       <li><a href="/">{% t "genel.anasayfa" %}</a></li>
@@ -11,7 +11,32 @@
         <h1 class="page-hero__title display reveal">{{ section.title|default:page.title|fancy }}</h1>
         {% if section.subtitle %}<p class="page-hero__sub lead reveal" style="--d:.1s">{{ section.subtitle|linebreaksbr }}</p>{% endif %}
       </div>
-      {% if section.image %}<figure class="page-hero__media reveal" style="--d:.2s"><img src="{{ section.image.url }}" alt=""></figure>{% endif %}
+      {% if section.image %}
+      <figure class="page-hero__media reveal" style="--d:.2s"><img src="{{ section.image.url }}" alt=""></figure>
+      {% elif hero_links %}
+      <nav class="hero-index" aria-label="{{ page.title }}">
+        <p class="hero-index__head"><span>{{ page.title }}</span><span>{{ hero_links|length|stringformat:"02d" }}</span></p>
+        <ol>
+          {% for link in hero_links %}
+          <li class="reveal" style="--d:{{ forloop.counter0 }}0ms">
+            {% if link.url %}<a href="{{ link.url }}">{% else %}<span class="hero-index__row">{% endif %}
+              <span class="hero-index__num">{{ forloop.counter|stringformat:"03d" }}</span>
+              <span class="hero-index__title">{{ link.title }}{% if link.note %}<small>{{ link.note }}</small>{% endif %}</span>
+              <svg class="ico" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
+            {% if link.url %}</a>{% else %}</span>{% endif %}
+          </li>
+          {% endfor %}
+        </ol>
+      </nav>
+      {% else %}
+      <div class="hero-badge reveal" style="--d:.2s" aria-hidden="true">
+        <svg class="hero-badge__ring" viewBox="0 0 200 200">
+          <defs><path id="badge-path-{{ section.pk }}" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0"/></defs>
+          <text><textPath href="#badge-path-{{ section.pk }}" textLength="488">{{ site.site_name|upper }} ✦ {{ site.tagline|default:page.title|upper }} ✦ </textPath></text>
+        </svg>
+        <img class="hero-badge__mark" src="{% logo_url 'logo_mark' %}" alt="">
+      </div>
+      {% endif %}
     </div>
   </div>
 </section>

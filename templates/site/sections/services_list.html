@@ -3,11 +3,15 @@
   <div class="container">
     {% if section.title or section.eyebrow or section.subtitle %}
     <div class="section-head">
+      {% if section.title or section.eyebrow %}
       <div>
         {% if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}
         {% if section.title %}<h2 class="section-head__title display t-l reveal">{{ section.title|fancy }}</h2>{% endif %}
       </div>
       {% if section.subtitle %}<p class="lead muted" style="max-width:46ch">{{ section.subtitle|linebreaksbr }}</p>{% endif %}
+      {% else %}
+      <p class="section-intro serif reveal">{{ section.subtitle|linebreaksbr }}</p>
+      {% endif %}
     </div>
     {% endif %}
     <div class="service-rows">

@@ -25,10 +25,14 @@ SECTION_TYPES = {
     "page_hero": {
         "label": "Sayfa Başlığı (Hero)",
         "icon": "heading",
-        "description": "İç sayfaların üst kısmı: büyük başlık, kısa açıklama ve isteğe bağlı görsel.",
+        "description": "İç sayfaların üst kısmı: büyük başlık ve açıklama. Sağ tarafta görsel, numaralı bağlantı listesi "
+                       "ya da (ikisi de yoksa) dönen logo rozeti gösterilir. Hizmetler sayfasında liste boş bırakılırsa "
+                       "hizmetler otomatik listelenir.",
         "theme": "dark",
         "fields": ["eyebrow", "title", "subtitle", "image"],
         "labels": {"eyebrow": "Üst etiket", "title": "Başlık", "subtitle": "Açıklama", "image": "Görsel (isteğe bağlı)"},
+        "items": {"label": "Sağ taraf listesi (isteğe bağlı)", "fields": ["title", "subtitle", "url"],
+                  "labels": {"title": "Başlık", "subtitle": "Küçük not", "url": "Bağlantı"}},
     },
     "statement": {
         "label": "Manifesto / Büyük Serif Metin",

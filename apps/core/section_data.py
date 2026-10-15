@@ -18,6 +18,17 @@ def _hero_home(section, ctx):
     return {"slides": [i for i in section.active_items() if i.image]}
 
 
+def _page_hero(section, ctx):
+    items = section.active_items()
+    links = [{"title": i.title, "note": i.subtitle, "url": i.url} for i in items if i.title]
+    if not links and not section.image and section.page.system_key == "services":
+        from apps.content.models import Service
+
+        links = [{"title": s.title, "note": "", "url": s.get_absolute_url()}
+                 for s in Service.objects.filter(is_active=True).only("title", "slug")]
+    return {"hero_links": links}
+
+
 def _featured_work(section, ctx):
     from apps.content.models import Project
 
@@ -144,6 +155,7 @@ def _contact_form(section, ctx):
 
 PROVIDERS = {
     "hero_home": _hero_home,
+    "page_hero": _page_hero,
     "logo_marquee": _brands_marquee,
     "featured_work": _featured_work,
     "capabilities": _capabilities,
