@@ -44,7 +44,16 @@ Başlık alanlarında:
 
 Örnek: `İyi işler şansa bırakılmaz, {bize bırakılır}`
 
-## Yerel kurulum
+## Hızlı başlatma (tek tık)
+
+1. [Python 3.10+](https://www.python.org/downloads/) kurun (Windows'ta "Add python.exe to PATH" kutusunu işaretleyin).
+2. Projeyi indirip klasöre çıkarın.
+3. **Windows:** `baslat.bat` dosyasına çift tıklayın. **macOS / Linux:** terminalde `./baslat.sh` çalıştırın.
+
+Betik her şeyi kurar, örnek içerikleri yükler ve siteyi tarayıcıda açar.
+Panel girişi: kullanıcı `admin`, şifre `bitasarim2026`. İlk girişte panelde **Hesabım** sayfasından şifreyi değiştirin.
+
+## Yerel kurulum (elle)
 
 Python 3.10+ gerekir.
 
