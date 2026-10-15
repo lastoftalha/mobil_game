@@ -226,7 +226,7 @@ mark.hl {
   clip-path: inset(0 0 100% 0); transition: clip-path .5s var(--ease); visibility: hidden;
 }
 .menu-open .mobile-menu { clip-path: inset(0 0 0 0); visibility: visible; }
-.mobile-menu__nav a { display: block; font-family: var(--f-display); text-transform: uppercase; font-size: clamp(2.6rem, 11vw, 4.6rem); line-height: 1.02; }
+.mobile-menu__nav a { display: block; font-family: var(--f-display); text-transform: uppercase; font-size: clamp(2.6rem, 11vw, 4.6rem); line-height: 1.22; }
 .mobile-menu__nav a:hover { -webkit-text-stroke: 1.5px var(--c-dark); color: transparent; }
 .mobile-menu__foot { display: grid; gap: 10px; margin-top: 28px; font-weight: 500; }
 .mobile-menu__foot .socials { margin-top: 8px; }
@@ -242,7 +242,7 @@ body.menu-open { overflow: hidden; }
 /* ---------- Hero (ana sayfa) ---------- */
 .hero-home { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 1fr); min-height: calc(100svh - var(--header-h)); background: var(--c-dark); }
 .hero-home__main { position: relative; display: flex; flex-direction: column; justify-content: space-between; background: var(--c-primary); color: var(--c-dark); padding: clamp(24px, 3vw, 44px) var(--gutter) 0; overflow: hidden; }
-.hero-home__title { font-size: var(--fs-hero); max-width: 12.5ch; padding-top: .1em; line-height: 1.12; }
+.hero-home__title { font-size: var(--fs-hero); max-width: 12.5ch; padding-top: .1em; line-height: 1.24; }
 .hero-home__title em.serif { font-size: 1.08em; }
 .hero-home__actions { margin-top: clamp(24px, 3vw, 40px); }
 .hero-home__band { margin-inline: calc(var(--gutter) * -1); margin-top: clamp(32px, 6vw, 80px); padding-block: clamp(18px, 2vw, 28px); border-top: 1px solid rgba(15,16,18,.22); }
